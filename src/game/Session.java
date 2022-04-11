@@ -24,6 +24,15 @@ public class Session {
     turn = true;
   }
 
+  public Session(Player p1,Player p2,Stack<Card> drawStack){
+    this.drawStack = drawStack;
+    discardPile = new Stack[]{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()};
+    expeditions = new Stack[][]{{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()},
+        {new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()}};
+    initPlayers(p1,p2);
+    turn = true;
+  }
+
   /**
    * This constructor is used for deep copying.
    * @param copy is the Session to copy
@@ -47,7 +56,13 @@ public class Session {
    * @return true if player 1 is winner
    */
   public int[] playGame(){
+    long start = System.currentTimeMillis();
+    long end;
     while(!drawStack.empty()){
+      end = System.currentTimeMillis();
+      if(end-start>10000) {
+        System.out.println("STOP");
+      }
       int atTurn = (turn)?0:1;
       int notAtTurn = (turn)?1:0;
       Move made = players[atTurn].makeMove(expeditions[atTurn],expeditions[notAtTurn],discardPile);
@@ -68,7 +83,7 @@ public class Session {
         made = players[atTurn].makeMove(expeditions[atTurn], expeditions[notAtTurn], discardPile);
       }
       executeMove(made);
-      //System.out.println(this);
+      System.out.println("Size draw stack:" + drawStack.size());
       turn = !turn;
     }
     return calcPoints();
@@ -98,14 +113,14 @@ public class Session {
   }
 
   private boolean putOnExpedition(int indexOfCard,int player){
-    Card c = players[player].placeCard(indexOfCard);
-    expeditions[player][c.getColor()].add(c);
+    Card card = players[player].placeCard(indexOfCard);
+    expeditions[player][card.getColor()].add(card);
     return true;//subject to change @TODO
   }
 
   private boolean putOnDiscardPile(int indexOfCard,int player){
-    Card c = players[player].placeCard(indexOfCard);
-    discardPile[c.getColor()].add(c);
+    Card card = players[player].placeCard(indexOfCard);
+    discardPile[card.getColor()].add(card);
     return true;//subject to change @TODO
   }
 
@@ -216,7 +231,7 @@ public class Session {
    * @param cardArray Cards, which should be shuffled.
    * @return Returns array wit the same Cards, but in different order.
    */
-  static void shuffleArray(Card[] cardArray) {
+  public static void shuffleArray(Card[] cardArray) {
     // If running on Java 6 or older, use `new Random()` on RHS here
     Random rnd = ThreadLocalRandom.current();
     for (int i = cardArray.length - 1; i > 0; i--) {
@@ -303,11 +318,11 @@ public class Session {
     int[] scores = calcPoints();
     return "game.Session{" +
         "\nCards left: " + drawStack.size() +
-        "\nExpeditions player.Player 1 " + stacksToString(expeditions[0]) +
+        "\nExpeditions Player 1 " + stacksToString(expeditions[0]) +
         "\nDiscardPile " + topOfStacksToString(discardPile) +
-        "\nExpeditions player.Player 2 " + stacksToString(expeditions[1]) +
-        "\nScore player.Player 1 " + scores[0] +
-        "\nScore player.Player 2 " + scores[1];
+        "\nExpeditions Player 2 " + stacksToString(expeditions[1]) +
+        "\nScore Player 1 " + scores[0] +
+        "\nScore Player 2 " + scores[1];
   }
 
   /**

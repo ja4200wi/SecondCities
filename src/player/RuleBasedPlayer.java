@@ -32,11 +32,11 @@ public class RuleBasedPlayer extends Player {
       onExp = true;
       //if(index!=-1) System.out.println("Start Expedition Rule");
     }
-    if (index == -1) {
+    /*if (index == -1) {
       index = dropCardNoOneNeeds(myExp,oppExp,discardPile);
       onExp = false;
       //if(index!=-1) System.out.println("Drop game.Card No One Needs Rule");
-    }
+    }*/
     if (index == -1) {
       int[] indicesCardsOpponentWants = dontGiveOpponentCardNeeded(oppExp);
       boolean placed = false;

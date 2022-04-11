@@ -9,17 +9,20 @@ import montecarlo.UCT;
 public class CheatingMCTSPlayer extends Player {
 
   boolean heavy;
+  int resource;
 
-  public CheatingMCTSPlayer(boolean heavy){
+  public CheatingMCTSPlayer(boolean heavy,int resource){
     super();
     this.heavy = heavy;
     this.isCheating = true;
+    //this.resource = (heavy)?resource/4:resource;
+    this.resource = resource;
   }
 
   public Move makeMove(Session game){
     UCT uct = new UCT();
-    if(heavy) return uct.mctsSearch(game,10,true);
-    return uct.mctsSearch(game,10000,false);
+    if(heavy) return uct.mctsSearchTimed(game,resource,true);
+    return uct.mctsSearchTimed(game,resource,false);
   }
 
   @Override

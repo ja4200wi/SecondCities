@@ -15,7 +15,6 @@ public class Node {
   HashSet<Node> children;
   int simulationsPlayed;
   int simulationsWon; // rewards
-  int possibleChildren = -1;
 
   public Node(Session game) {
     state = game;
@@ -53,11 +52,22 @@ public class Node {
    * @return true if all possible states have been expanded
    */
   public boolean isFullyExpanded(){
-    if(possibleChildren==-1){
-      possibleChildren = state.getPossibleStates().size();
+    if(children.size()==0){
+      expandAll();
+      return false;
     }
-    return (possibleChildren==children.size());
+    return true;
   }
+
+  public void expandAll(){
+    ArrayList<Session> possibleStates = this.state.getPossibleStates();
+    for(Session s : possibleStates){
+      Node newChild = new Node(s);
+      this.children.add(newChild);
+      newChild.setParent(this);
+    }
+  }
+
 
   public static int numberOfNodesBelow(Node n){
     int childrenSize = n.children.size();

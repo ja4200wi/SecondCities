@@ -1,16 +1,18 @@
 package player;
 
+import domain.players.AbstractPlayer;
 import game.Card;
 import game.Move;
 import game.Session;
 import java.util.Stack;
 
-public abstract class Player implements Cloneable{
+public abstract class Player {
 
   protected Card[] hand;
   boolean isCheating = false;
 
   public Player(){
+    super();
   }
 
   public Player(Card[] given){

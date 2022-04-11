@@ -13,7 +13,7 @@ public class UCT extends MonteCarloTreeSearch{
     boolean imP1 = promisingNode.getState().isTurn();
     while(!promisingNode.isTerminal()){
       if(!promisingNode.isFullyExpanded()) {
-        expandAll(promisingNode);
+        //expands all in .isFullyExpanded
       } else if(!promisingNode.allChildrenSimOne()) {
         return expand(promisingNode);
       }
@@ -26,15 +26,6 @@ public class UCT extends MonteCarloTreeSearch{
 
   public Node expand(Node node) {
     return node.getChildWithoutSim();
-  }
-
-  public void expandAll(Node node){
-    ArrayList<Session> possibleStates = node.state.getPossibleStates();
-    for(Session s : possibleStates){
-      Node newChild = new Node(s);
-      node.children.add(newChild);
-      newChild.setParent(node);
-    }
   }
 
   @Override

@@ -7,6 +7,8 @@ import game.Session;
 public abstract class MonteCarloTreeSearch {
 
   public Move mctsSearch(Session initial,int iterations,boolean heavyPlayout){
+    long end;
+    long start = System.currentTimeMillis();
     Node root = new Node(initial);
     int player = (initial.isTurn())?1:2;
     while(iterations>0) {
@@ -18,12 +20,15 @@ public abstract class MonteCarloTreeSearch {
       backPropagate(promisingNode,reward);
     }
     Node bestChild = bestChild(root,0, initial.isTurn());
+    end = System.currentTimeMillis();
+    System.out.println("One Move of MCTS: " + (end-start));
     return getMove(root,bestChild);
   }
 
   public Move mctsSearchTimed(Session initial,int time,boolean heavyPlayout){
     Node root = new Node(initial);
     int player = (initial.isTurn())?1:2;
+    long end;
     long start = System.currentTimeMillis();
     while(System.currentTimeMillis()<start+time) {
       Node  promisingNode = treePolicy(root);
@@ -33,6 +38,8 @@ public abstract class MonteCarloTreeSearch {
       backPropagate(promisingNode,reward);
     }
     Node bestChild = bestChild(root,0,initial.isTurn());
+    //end = System.currentTimeMillis();
+    //System.out.println("One Move of MCTS: " + (end-start));
     return getMove(root,bestChild);
   }
 
@@ -71,5 +78,19 @@ public abstract class MonteCarloTreeSearch {
   }
 
   public abstract Node bestChild(Node root,double constantExploration,boolean imP1);
+
+  public Node mctsSearchReturnTree(Session initial,int iterations,boolean heavyPlayout){
+    Node root = new Node(initial);
+    int player = (initial.isTurn())?1:2;
+    while(iterations>0) {
+      iterations--;
+      Node  promisingNode = treePolicy(root);
+      int winner = defaultPolicy(promisingNode.getState(),heavyPlayout);
+      int reward = 0;
+      if(winner==player) reward=1;
+      backPropagate(promisingNode,reward);
+    }
+    return root;
+  }
 
 }
