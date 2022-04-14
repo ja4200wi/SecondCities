@@ -14,21 +14,18 @@ public class RuleBasedPlayer extends Player {
    */
   private boolean[] playColor = {false, false, false, false, false};
 
-  public RuleBasedPlayer(){}
-
-  public RuleBasedPlayer(Card[] given){super(given);}
-
+  public RuleBasedPlayer(){super();}
 
   @Override
-  public Move makeMove(Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile) {
+  public Move makeMove(Card[] myHand,Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile,boolean turn) {
     int index = -1;
     boolean onExp;
     int drawFrom = -1;
     /**Placing*/
-    index = obviousPlacement(myExp);
+    index = obviousPlacement(myHand,myExp);
     onExp = true;
     if (index == -1) {
-      index = startExpedition(myExp);
+      index = startExpedition(myHand,myExp);
       onExp = true;
       //if(index!=-1) System.out.println("Start Expedition Rule");
     }
@@ -38,15 +35,15 @@ public class RuleBasedPlayer extends Player {
       //if(index!=-1) System.out.println("Drop game.Card No One Needs Rule");
     }*/
     if (index == -1) {
-      int[] indicesCardsOpponentWants = dontGiveOpponentCardNeeded(oppExp);
+      int[] indicesCardsOpponentWants = dontGiveOpponentCardNeeded(myHand,oppExp);
       boolean placed = false;
       int maxTry = 16;
       while (!placed && maxTry > 0) {
         index = (int) (Math.random() * 8);
-        Card c = hand[index];
+        Card c = myHand[index];
         int color = c.getColor();
         if (Player.addCardPossible(myExp[color],c,color)) {
-          index = makeSureLowestCardPlayed(index,myExp);
+          index = makeSureLowestCardPlayed(myHand,index,myExp);
           //System.out.println("Random game.Card on Expedition");
           onExp = true;
           placed = true;
@@ -73,19 +70,19 @@ public class RuleBasedPlayer extends Player {
     return null;
   }
 
-  public int startExpedition(Stack<Card>[] myExp){
-    decideColorsToPlay();
+  public int startExpedition(Card[] myHand,Stack<Card>[] myExp){
+    decideColorsToPlay(myHand);
     for(int i = 0;i<5;i++){
       if(playColor[i]){
-        if(Player.getTopCard(myExp[i])==null) return findLowestOfColor(i);
+        if(Player.getTopCard(myExp[i])==null) return findLowestOfColor(i,myHand);
       }
     }
     return -1;
   }
 
-  public void decideColorsToPlay(){
+  public void decideColorsToPlay(Card[] myHand){
     int[] pointsPerColor = {0,0,0,0,0};
-    for(Card c : hand){
+    for(Card c : myHand){
       if(!c.isCoinCard()) pointsPerColor[c.getColor()] += c.getValue();
     }
     for(int i = 0;i<5;i++) {
@@ -93,15 +90,15 @@ public class RuleBasedPlayer extends Player {
     }
   }
 
-  public int dropCardNoOneNeeds(Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile){
+  public int dropCardNoOneNeeds(Card[] myHand,Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile){
     int cardColor;
     int cardValue;
     int topExpCardValue;
     int topExpCardOppValue;
     if(getNumberOfCardsLeft(myExp,oppExp,discardPile)<30) return -1;
     for(int i = 0;i<8;i++) {
-      cardColor = hand[i].getColor();
-      cardValue = hand[i].getValue();
+      cardColor = myHand[i].getColor();
+      cardValue = myHand[i].getValue();
       if (Player.getTopCard(myExp[cardColor]) != null
           && Player.getTopCard(oppExp[cardColor]) != null) {
         topExpCardValue = Player.getTopCard(myExp[cardColor]).getValue();
@@ -114,12 +111,12 @@ public class RuleBasedPlayer extends Player {
     return -1;
   }
 
-  public int findLowestOfColor(int color){
+  public int findLowestOfColor(int color,Card[] myHand){
     int indexOfCard = -1;
     for(int i = 0;i<8;i++){
-      if(hand[i].getColor()==color) {
+      if(myHand[i].getColor()==color) {
         if(indexOfCard != -1) {
-          if(hand[i].getValue()<hand[indexOfCard].getValue() || hand[i].isCoinCard()){
+          if(myHand[i].getValue()<myHand[indexOfCard].getValue() || myHand[i].isCoinCard()){
             indexOfCard = i;
           }
         } else {
@@ -130,15 +127,15 @@ public class RuleBasedPlayer extends Player {
     return indexOfCard;
   }
 
-  public int obviousPlacement(Stack<Card>[] myExp){
+  public int obviousPlacement(Card[] myHand,Stack<Card>[] myExp){
     Card[] topExpCards = new Card[5];
     int count = 0;
     for(Stack<Card> exp : myExp){
       topExpCards[count++] = Player.getTopCard(exp);
     }
     for(int i = 0;i<8;i++){
-      if(topExpCards[hand[i].getColor()]!=null) {
-        if (hand[i].getValue() == topExpCards[hand[i].getColor()].getValue() + 1) {
+      if(topExpCards[myHand[i].getColor()]!=null) {
+        if (myHand[i].getValue() == topExpCards[myHand[i].getColor()].getValue() + 1) {
           return i;
         }
       }
@@ -171,12 +168,12 @@ public class RuleBasedPlayer extends Player {
     return  totalCards;
   }
 
-  public int[] dontGiveOpponentCardNeeded(Stack<Card>[] oppExp){
+  public int[] dontGiveOpponentCardNeeded(Card[] myHand,Stack<Card>[] oppExp){
     ArrayList<Integer> indices = new ArrayList<>();
     for(int i = 0;i<8;i++){
-      Card c = Player.getTopCard(oppExp[hand[i].getColor()]);
+      Card c = Player.getTopCard(oppExp[myHand[i].getColor()]);
       if(c==null) indices.add(i);
-      if(c!=null && hand[i].getValue()>c.getValue()) indices.add(i);
+      if(c!=null && myHand[i].getValue()>c.getValue()) indices.add(i);
     }
     return indices.stream().mapToInt(Integer::intValue).toArray();
   }
@@ -188,16 +185,16 @@ public class RuleBasedPlayer extends Player {
     return false;
   }
 
-  public int makeSureLowestCardPlayed(int index,Stack<Card>[] myExp){
-    Card chosen = hand[index];
+  public int makeSureLowestCardPlayed(Card[] myHand,int index,Stack<Card>[] myExp){
+    Card chosen = myHand[index];
     if(chosen.isCoinCard()) return index;
     for(int i = 0;i<8;i++){
-      Card current = hand[i];
+      Card current = myHand[i];
       if(!current.isCoinCard()) {
         if (current.getColor() == chosen.getColor() && current.getValue()< chosen.getValue()
             && Player.addCardPossible(myExp[chosen.getColor()],current, chosen.getColor())) {
           index = i;
-          chosen = hand[index];
+          chosen = myHand[index];
         }
       }
     }

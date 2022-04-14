@@ -1,64 +1,153 @@
 package montecarlo;
 
+import game.Card;
 import game.Move;
 import game.Session;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Stack;
 import javafx.util.Pair;
+import player.Player;
 import player.RandomPlayer;
+import player.RuleBasedPlayer;
 
 public class MonteCarloIS {
 
-  public Move ismcts(InformationIS initialIS,int iterations){
-    NodeIS root = createRootNode(initialIS);
-    Pair<NodeIS,Session> nodeAndDet;
-    int player = (initialIS.isTurn())?1:2;
-    while(iterations>0){
-      Session determinization= initialIS.chooseDeterminization();
+  public static Move ismcts(InformationIS initialIS,int time,boolean heavyPlayout){
+    int counterIterations = 0;
+    long start = System.currentTimeMillis();
+    NodeIS root = new NodeIS(); //create root(empty node at start)
+    Pair<NodeIS,Session> nodeAndDet = null; //
+    int player = (initialIS.isImP1())?1:2;
+    while(System.currentTimeMillis()-start<time){
+    /*while(time>0){
+      time--;
+      if(time == 1000){
+        System.out.println("DEBUG");
+      }*/
+      Session determinization= initialIS.createDeterminization();
       nodeAndDet = select(root,determinization);
-      if(actionsFromDetNode(nodeAndDet.getKey(),determinization).size()!=0) {
+      if(movesFromDetNotInNodeChildren(nodeAndDet.getKey(),determinization).size()!=0) {
         nodeAndDet = expand(nodeAndDet.getKey(),determinization);
       }
-      int winner = simulate(nodeAndDet.getValue());
+      int winner = simulate(nodeAndDet.getValue(),heavyPlayout);
       int reward = (winner==player)?1:0;
       backPropagate(reward,nodeAndDet.getKey());
+      counterIterations++;
     }
-    return bestMove(root); //TODO: return action with highest visit count
+    NodeIS bestChild = root.getBestChild();
+    //System.out.println("Iterations made: " + counterIterations);
+    return bestChild.getIncomingAction(); //TODO: return action with highest visit count
   }
 
-  public Pair<NodeIS,Session> select(NodeIS node,Session determinization){
-    while(!determinization.isOver() && actionsFromDetNode(node,determinization).size()!=0){
-      node = c; //TODO: probably should be a deep copy
-      determinization = f(determinization,node.getIncomingAction()); //TODO: probably should be a deep copy
+  public static Pair<NodeIS,Session> select(NodeIS node,Session determinization){
+    while(!determinization.isOver() && movesFromDetNotInNodeChildren(node,determinization).size()==0){
+      node = UCB(node,determinization,Math.sqrt(2));
+      determinization.executeMove(node.incomingAction);//TODO: probably should be a deep copy
     }
     return new Pair<>(node,determinization);
   }
 
-  public Pair<NodeIS,Session> expand(NodeIS node,Session determinization){
-    Move move = chooseRandomAction(actionsFromDetNode(node,determinization));
+  /**
+   * Method to get best child available with given determinization.
+   * @param node Current node in tree
+   * @param determinization is the current determinization
+   * @param explorationConstant constant
+   * @return child with highest UCT value
+   */
+  public static NodeIS UCB(NodeIS node,Session determinization,double explorationConstant){
+    double max = -1;
+    for(NodeIS child : node.getChildrenConformWith(determinization)){//only children conform with determinization
+      double ucbValue = (double) child.totalReward/child.visitCount +
+          explorationConstant*Math.sqrt(Math.log(child.availabilityCount)/child.visitCount);
+      if(ucbValue>max){
+        max = ucbValue;
+        node = child;
+      }
+    }
+    return node;
+  }
+
+  public static NodeIS UCB(NodeIS node,double explorationConstant){
+    double max = -1;
+    for(NodeIS child : node.children){
+      double ucbValue = (child.totalReward/child.visitCount) +
+          explorationConstant*Math.sqrt(Math.log(child.availabilityCount)/child.visitCount);
+      if(ucbValue>max){
+        max = ucbValue;
+        node = child;
+      }
+    }
+    return node;
+  }
+
+  public static Pair<NodeIS,Session> expand(NodeIS node,Session determinization){
+    ArrayList<Move> possible = movesFromDetNotInNodeChildren(node,determinization);
+    Random random = new Random();
+    Move move = possible.get(random.nextInt(possible.size())); //Select random move from compatible moves
     NodeIS child = new NodeIS(move);
-    node.addChild(child);
-    node = child; //TODO: probably should be a deep copy
-    determinization = resultingMove(determinization,move);
+    node = node.addChild(move); //TODO: probably should be a deep copy
+    determinization.executeMove(move); // implements move to make and applies change to det
     return new Pair<>(node,determinization);
   }
 
-  public int simulate(Session determinization){
-    RandomPlayer random = new RandomPlayer();
-    RandomPlayer random2 = new RandomPlayer();
-    determinization.setPlayer(random,random2);
-    int[] scores = determinization.playGame();
+  public static int simulate(Session determinization,boolean heavy){
+    Player one;
+    Player two;
+    if(heavy){
+      one = new RuleBasedPlayer();
+      two = new RuleBasedPlayer();
+    } else {
+      one = new RandomPlayer();
+      two = new RandomPlayer();
+    }
+    determinization.setPlayer(one,two);
+    int[] scores = determinization.simGame();
     return (scores[0]>scores[1])?1:2;
   }
 
-  public void backPropagate(int reward,NodeIS node){
+  public static boolean backPropagate(int reward,NodeIS node){
     while(node!=null){
       node.incVisitCount();
       node.incTotalReward(reward);
       node.incAvailabilityCount();
+      if(node.parent==null) return true;
       for(NodeIS n : node.getSiblings()){
         n.incAvailabilityCount();
       }
       node = node.getParent();
     }
+    return true;
+  }
+
+  public static ArrayList<Move> movesFromDetNotInNodeChildren(NodeIS node, Session determinization){
+    ArrayList<Move> allActions = getPossibleMoves(determinization);
+    allActions.removeAll(node.getMovesFromChildren());
+    return  allActions;
+  }
+
+  public static ArrayList<Move> getPossibleMoves(Session game){
+    ArrayList<Move> moves = new ArrayList<>();
+    //Determine where draws are possible
+    int[] possibleDraws = game.getPossibleDrawsInt();
+    int length = possibleDraws.length;
+    Card[] hand = game.getHandAtTurn();//Get hand of player at turn
+    Stack<Card>[] expeditions = game.getPlayerExpeditions(game.isTurn());
+    boolean expMovePossible = false;
+    for(int i = 0;i<8;i++) {
+      int color = hand[i].getColor();
+      expMovePossible = Session.addCardPossible(expeditions[color],hand[i],color);
+      //If put on discardPile only allow other colors from discard pile
+      for(int j = 0;j<length;j++){
+        if(expMovePossible){
+          moves.add(new Move(i,true,possibleDraws[j]));
+        }
+        if(color!=possibleDraws[j]){
+          moves.add(new Move(i,false,possibleDraws[j]));
+        }
+      }
+    }
+    return moves;
   }
 
 }

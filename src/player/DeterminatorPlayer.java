@@ -14,11 +14,12 @@ public class DeterminatorPlayer extends Player {
   boolean heavy;
 
   public DeterminatorPlayer(int iter){
-    this.iterations = (heavy)?iterations/4:iterations;
+    super();
+    this.iterations = (heavy)?iter/4:iter;
   }
 
   @Override
-  public Move makeMove(Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile) {
+  public Move makeMove(Card[] myHand,Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile,boolean turn) {
     Move m = determinization(10,1000,myExp,oppExp,discardPile);
     return m;
   }

@@ -1,6 +1,7 @@
 import game.Session;
 import player.CheatingMCTSPlayer;
 import player.HumanPlayer;
+import player.ISPlayer;
 import player.RandomPlayer;
 import player.RuleBasedPlayer;
 
@@ -13,8 +14,9 @@ public class Main {
     RuleBasedPlayer rule2 = new RuleBasedPlayer();
     RandomPlayer random = new RandomPlayer();
     CheatingMCTSPlayer cheater = new CheatingMCTSPlayer(false,4000);
-    Session game = new Session(cheater,random);
-    int[] scores = game.cheatGame();
+    ISPlayer smart = new ISPlayer(false,1000);
+    Session game = new Session(smart,random);
+    int[] scores = game.playGame();
     System.out.println("Score Player 1:" + scores[0] + "\tScore Player 2:" + scores[1]);
   }
 

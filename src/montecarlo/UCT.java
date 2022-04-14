@@ -35,10 +35,10 @@ public class UCT extends MonteCarloTreeSearch{
     Card[] hand1 = simulation.getPlayerHand(true);
     Card[] hand2 = simulation.getPlayerHand(false);
     if(heavyPlayout) {
-      simulation.setPlayer(new RuleBasedPlayer(hand1),new RuleBasedPlayer(hand2));
+      simulation.setPlayer(new RuleBasedPlayer(),new RuleBasedPlayer());
       scores = simulation.playGame();
     } else {
-      simulation.setPlayer(new RandomPlayer(hand1),new RandomPlayer(hand2));
+      simulation.setPlayer(new RandomPlayer(),new RandomPlayer());
       scores = simulation.playGame();
     }
     return (scores[0]>scores[1])?1:2;

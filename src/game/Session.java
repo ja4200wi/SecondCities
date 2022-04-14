@@ -10,6 +10,7 @@ import player.RandomPlayer;
 public class Session {
 
   private Player[] players;
+  private Card[][] playercards;
   private Stack<Card> drawStack;
   private Stack<Card>[] discardPile; //discardPile[0]=yellow stack etc.
   private Stack<Card>[][] expeditions; //expedtions[1][4]=player2 red exp etc.
@@ -21,8 +22,11 @@ public class Session {
     expeditions = new Stack[][]{{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()},
         {new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()}};
     initPlayers(p1,p2);
+    playercards = new Card[2][8];
+    initPlayerCards();
     turn = true;
   }
+
 
   public Session(Player p1,Player p2,Stack<Card> drawStack){
     this.drawStack = drawStack;
@@ -34,11 +38,31 @@ public class Session {
   }
 
   /**
+   * Constructor responsible for creation of determinizations
+   * @param playerHands
+   * @param drawStack
+   * @param discardPile
+   */
+  public Session(Card[][] playerHands,Stack<Card> drawStack,Stack<Card>[] discardPile,Stack<Card>[][] expeditions,boolean turn){
+    players = new Player[]{new RandomPlayer(),new RandomPlayer()};
+    playercards = playerHands;
+    this.drawStack = drawStack;
+    this.discardPile = discardPile;
+    this.expeditions = expeditions;
+    this.turn = turn;
+  }
+
+  /**
    * This constructor is used for deep copying.
    * @param copy is the Session to copy
    */
   public Session(Session copy){
     players = new Player[]{new RandomPlayer(copy.players[0]),new RandomPlayer(copy.players[1])};
+    playercards = new Card[2][5];
+    for(int i = 0;i<8;i++){
+      playercards[0][i] = copy.playercards[0][i].clone();
+      playercards[1][i] = copy.playercards[1][i].clone();
+    }
     drawStack = (Stack<Card>) copy.drawStack.clone();
     discardPile = new Stack[]{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()};
     expeditions = new Stack[][]{{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()},
@@ -58,14 +82,36 @@ public class Session {
   public int[] playGame(){
     long start = System.currentTimeMillis();
     long end;
+    int countTurns = 0;
     while(!drawStack.empty()){
       end = System.currentTimeMillis();
-      if(end-start>10000) {
-        System.out.println("STOP");
-      }
       int atTurn = (turn)?0:1;
       int notAtTurn = (turn)?1:0;
-      Move made = players[atTurn].makeMove(expeditions[atTurn],expeditions[notAtTurn],discardPile);
+      Move made;
+      if(players[atTurn].isCheating()){
+        made = players[atTurn].makeMove(this);
+      } else {
+        made = players[atTurn].makeMove(playercards[atTurn],expeditions[atTurn], expeditions[notAtTurn], discardPile,turn);
+      }
+      /*if(atTurn==0) System.out.println(this + "\nCards: " + playercards[0][0] + playercards[0][1]
+          + playercards[0][2] + playercards[0][3] + playercards[0][4] + playercards[0][5]
+          + playercards[0][6] + playercards[0][7] + "\n");*/
+      executeMove(made);
+      turn = !turn;
+      countTurns++;
+      //System.out.println("Turn Nr. "+ countTurns + ";\tPlayer Nr." + atTurn + ";\tCards left -->" + getCardsLeft());
+    }
+    return calcPoints();
+  }
+
+  public int[] simGame(){
+    long start = System.currentTimeMillis();
+    long end;
+    while(!drawStack.empty()){
+      end = System.currentTimeMillis();
+      int atTurn = (turn)?0:1;
+      int notAtTurn = (turn)?1:0;
+      Move made = players[atTurn].makeMove(playercards[atTurn],expeditions[atTurn],expeditions[notAtTurn],discardPile,turn);
       executeMove(made);
       turn = !turn;
     }
@@ -80,10 +126,9 @@ public class Session {
       if(players[atTurn].isCheating()){
         made = players[atTurn].makeMove(this);
       } else {
-        made = players[atTurn].makeMove(expeditions[atTurn], expeditions[notAtTurn], discardPile);
+        made = players[atTurn].makeMove(playercards[atTurn],expeditions[atTurn], expeditions[notAtTurn], discardPile,turn);
       }
       executeMove(made);
-      System.out.println("Size draw stack:" + drawStack.size());
       turn = !turn;
     }
     return calcPoints();
@@ -94,7 +139,7 @@ public class Session {
    * @param move is the move proposed by the player
    * @return whether the move was legal
    */
-  private boolean executeMove(Move move){
+  public boolean executeMove(Move move){
     int player = (turn)?0:1;
     int cardIndex = move.getCardIndex();
     boolean onExp = move.isOnExp();
@@ -113,26 +158,26 @@ public class Session {
   }
 
   private boolean putOnExpedition(int indexOfCard,int player){
-    Card card = players[player].placeCard(indexOfCard);
+    Card card = playercards[player][indexOfCard];
     expeditions[player][card.getColor()].add(card);
     return true;//subject to change @TODO
   }
 
   private boolean putOnDiscardPile(int indexOfCard,int player){
-    Card card = players[player].placeCard(indexOfCard);
+    Card card = playercards[player][indexOfCard];
     discardPile[card.getColor()].add(card);
     return true;//subject to change @TODO
   }
 
   private boolean drawFromStack(int index,int player){
     Card card = drawStack.pop();
-    players[player].drawCard(card,index);
+    playercards[player][index] = card;
     return true;//subject to change @TODO
   }
 
   private boolean drawFromDiscardPile(int drawFrom,int index,int player){
     Card card = discardPile[drawFrom-1].pop();
-    players[player].drawCard(card,index);
+    playercards[player][index] = card;
     return true;//subject to change @TODO
   }
 
@@ -188,17 +233,11 @@ public class Session {
    * @param p2 is the second player
    */
   private void initPlayers(Player p1,Player p2){
+    p1.setImP1(true);
+    p2.setImP1(false);
     players = new Player[2];
     players[0] = p1;
     players[1] = p2;
-    Card[] dealCardsP1 = new Card[8];
-    Card[] dealCardsP2 = new Card[8];
-    for(int i = 0;i<8;i++){
-      dealCardsP1[i] = drawStack.pop();
-      dealCardsP2[i] = drawStack.pop();
-    }
-    players[0].initHand(dealCardsP1);
-    players[1].initHand(dealCardsP2);
   }
 
   /**
@@ -225,13 +264,20 @@ public class Session {
     drawStack = cardArrayToStack(wholeSetOfCards);
   }
 
+  private void initPlayerCards() {
+    for(int i = 0;i<8;i++){
+      playercards[0][i] = drawStack.pop();
+      playercards[1][i] = drawStack.pop();
+    }
+  }
+
   /**
    * This method takes an array of Cards and shuffles the order.
    * It implements the Fisher-Yates shuffle
    * @param cardArray Cards, which should be shuffled.
    * @return Returns array wit the same Cards, but in different order.
    */
-  public static void shuffleArray(Card[] cardArray) {
+  private static void shuffleArray(Card[] cardArray) {
     // If running on Java 6 or older, use `new Random()` on RHS here
     Random rnd = ThreadLocalRandom.current();
     for (int i = cardArray.length - 1; i > 0; i--) {
@@ -248,7 +294,7 @@ public class Session {
    * @param cards Array of cards.
    * @return Stack with cards of the given array.
    */
-  public static Stack<Card> cardArrayToStack(Card[] cards){
+  private static Stack<Card> cardArrayToStack(Card[] cards){
     Stack<Card> result = new Stack<Card>();
     for(Card c : cards) {
       result.push(c);
@@ -279,13 +325,7 @@ public class Session {
     return String.valueOf(sb);
   }
 
-  public Card[] getHandAtTurn(){
-    return (turn)?players[0].getHand():players[1].getHand();
-  }
-
-  public Card[] getHand(boolean player){
-    return (player)?players[0].getHand():players[1].getHand();
-  }
+  public Card[] getHandAtTurn(){ return (turn)?playercards[0]:playercards[1]; }
 
   public int getCardsLeft(){
     return drawStack.size();
@@ -310,19 +350,23 @@ public class Session {
   }
 
   public Card[] getPlayerHand(boolean player){
-    return (player)?players[0].getHand():players[1].getHand();
+    return (player)?playercards[0]:playercards[1];
+  }
+
+  public Stack<Card>[] getPlayerExpeditions(boolean player){
+    return (player)?expeditions[0]:expeditions[1];
   }
 
   @Override
   public String toString() {
     int[] scores = calcPoints();
-    return "game.Session{" +
-        "\nCards left: " + drawStack.size() +
+    return "Session{" +
+        "\tCards left: " + drawStack.size() +
         "\nExpeditions Player 1 " + stacksToString(expeditions[0]) +
         "\nDiscardPile " + topOfStacksToString(discardPile) +
         "\nExpeditions Player 2 " + stacksToString(expeditions[1]) +
-        "\nScore Player 1 " + scores[0] +
-        "\nScore Player 2 " + scores[1];
+        "\nScore Player 1: " + scores[0] +
+        "\tScore Player 2. " + scores[1];
   }
 
   /**
@@ -381,14 +425,14 @@ public class Session {
 
   public int compareTo(Session other){
     for(int i = 0;i<8;i++){
-      if(players[0].getHand()[i].compareTo(other.players[0].getHand()[i])==-1) return -1;
+      if(playercards[0][i].equals(other.playercards[0][i])) return -1;
     }
     return 1;
   }
 
   public int[] getPossibleDrawsInt(){
     ArrayList<Integer> possibleDraws = new ArrayList<>();
-    possibleDraws.add(0);
+    if(!drawStack.isEmpty())possibleDraws.add(0);
     if (!discardPile[0].isEmpty()) {
       possibleDraws.add(1);
     }

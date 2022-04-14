@@ -57,9 +57,9 @@ public abstract class MonteCarloTreeSearch {
     boolean onExp = false;
     int drawFrom = -1;
     Card[] currentHand = initial.getState().getHandAtTurn();
-    Card[] nextHand = (initial.getState().isTurn())?bestChild.getState().getHand(true):bestChild.getState().getHand(false);
+    Card[] nextHand = (initial.getState().isTurn())?bestChild.getState().getPlayerHand(true):bestChild.getState().getPlayerHand(false);
     for(int i = 0;i<8;i++){
-      if(currentHand[i].compareTo(nextHand[i])==-1) {
+      if(!currentHand[i].equals(nextHand[i])) {
         index = i;
         i=9;
       }

@@ -26,7 +26,7 @@ public class CheatingMCTSPlayer extends Player {
   }
 
   @Override
-  public Move makeMove(Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile) {
+  public Move makeMove(Card[] myHand,Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile,boolean turn) {
     return null;
   }
 }

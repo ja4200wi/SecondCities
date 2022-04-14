@@ -12,14 +12,16 @@ public class Card implements Cloneable{
     this.coinCard = (value<2);
   }
 
-  public int compareTo(Card c) {
+  @Override
+  public boolean equals(Object o) {
+    Card c = (Card) o;
     if(value!=c.getValue()) {
-      return -1;
+      return false;
     }
     if(color!=c.getColor()) {
-      return -1;
+      return false;
     }
-    return 1;
+    return true;
   }
 
   /** Get methods */

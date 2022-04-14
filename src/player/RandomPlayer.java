@@ -11,13 +11,11 @@ public class RandomPlayer extends Player{
 
   public RandomPlayer(Player player){super(player);}
 
-  public RandomPlayer(Card[] given){super(given);}
-
   @Override
-  public Move makeMove(Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile) {
+  public Move makeMove(Card[] myHand,Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile,boolean turn) {
     boolean onExp;
     int random = (int) (Math.random() * 8);
-    Card c = hand[random];
+    Card c = myHand[random];
     int color = c.getColor();
     if(addCardPossible(myExp[color],c,color)) {
       onExp = true;

@@ -66,4 +66,13 @@ public class Move {
         ", drawFrom=" + drawFrom +
         '}';
   }
+
+  @Override
+  public boolean equals(Object o){
+    Move m = (Move) o;
+    if(cardIndex!=m.cardIndex)return false;
+    if(onExp!=m.onExp)return false;
+    if(drawFrom!=m.drawFrom)return false;
+    return true;
+  }
 }
