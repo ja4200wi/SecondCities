@@ -2,30 +2,30 @@ package montecarlo;
 
 import game.Card;
 import game.Session;
-import java.util.ArrayList;
+import javafx.util.Pair;
 import player.RandomPlayer;
 import player.RuleBasedPlayer;
 
 public class UCT extends MonteCarloTreeSearch{
 
   @Override
-  public Node treePolicy(Node promisingNode) {
-    boolean imP1 = promisingNode.getState().isTurn();
-    while(!promisingNode.isTerminal()){
+  public Pair<Node,Session> treePolicy(Node promisingNode,Session det) {
+    while(!det.isOver()){
       if(!promisingNode.isFullyExpanded()) {
         //expands all in .isFullyExpanded
       } else if(!promisingNode.allChildrenSimOne()) {
-        return expand(promisingNode);
+        return null;
       }
       else {
-        promisingNode = bestChild(promisingNode,Math.sqrt(2),imP1);
+        promisingNode = bestChild(promisingNode,Math.sqrt(2),true);
       }
     }
-    return promisingNode;
+    return null;
   }
 
-  public Node expand(Node node) {
-    return node.getChildWithoutSim();
+  public Pair<Node,Session> expand(Node node,Session det) {
+    Node toExpand = node.getChildWithoutSim();
+    return null;
   }
 
   @Override
@@ -55,7 +55,7 @@ public class UCT extends MonteCarloTreeSearch{
 
   @Override
   public Node bestChild(Node root,double constantExploration,boolean imP1) {
-    boolean turn = root.getState().isTurn();
+    boolean turn = true;
     Node bestChild = null;
     double ctValue = -1;
     for(Node n : root.getChildren()) {

@@ -13,36 +13,30 @@ import player.RuleBasedPlayer;
 
 public class MonteCarloIS {
 
-  public static Move ismcts(InformationIS initialIS,int time,boolean heavyPlayout){
+  public static Move ismcts(InformationIS initialIS,int time,boolean heavyPlayout,double explorationConstant,int rewardStrategy){
     int counterIterations = 0;
     long start = System.currentTimeMillis();
-    NodeIS root = new NodeIS(); //create root(empty node at start)
+    NodeIS root = new NodeIS();
     Pair<NodeIS,Session> nodeAndDet = null; //
     int player = (initialIS.isImP1())?1:2;
     while(System.currentTimeMillis()-start<time){
-    /*while(time>0){
-      time--;
-      if(time == 1000){
-        System.out.println("DEBUG");
-      }*/
       Session determinization= initialIS.createDeterminization();
-      nodeAndDet = select(root,determinization);
+      nodeAndDet = select(root,determinization,explorationConstant);
       if(movesFromDetNotInNodeChildren(nodeAndDet.getKey(),determinization).size()!=0) {
         nodeAndDet = expand(nodeAndDet.getKey(),determinization);
       }
-      int winner = simulate(nodeAndDet.getValue(),heavyPlayout);
-      int reward = (winner==player)?1:0;
+      int reward = simulate(nodeAndDet.getValue(),heavyPlayout,rewardStrategy,player);
       backPropagate(reward,nodeAndDet.getKey());
       counterIterations++;
     }
     NodeIS bestChild = root.getBestChild();
-    //System.out.println("Iterations made: " + counterIterations);
+    System.out.println("Iterations made: " + counterIterations);
     return bestChild.getIncomingAction(); //TODO: return action with highest visit count
   }
 
-  public static Pair<NodeIS,Session> select(NodeIS node,Session determinization){
+  public static Pair<NodeIS,Session> select(NodeIS node,Session determinization,double explorationConstant){
     while(!determinization.isOver() && movesFromDetNotInNodeChildren(node,determinization).size()==0){
-      node = UCB(node,determinization,Math.sqrt(2));
+      node = UCB(node,determinization,explorationConstant);
       determinization.executeMove(node.incomingAction);//TODO: probably should be a deep copy
     }
     return new Pair<>(node,determinization);
@@ -68,19 +62,6 @@ public class MonteCarloIS {
     return node;
   }
 
-  public static NodeIS UCB(NodeIS node,double explorationConstant){
-    double max = -1;
-    for(NodeIS child : node.children){
-      double ucbValue = (child.totalReward/child.visitCount) +
-          explorationConstant*Math.sqrt(Math.log(child.availabilityCount)/child.visitCount);
-      if(ucbValue>max){
-        max = ucbValue;
-        node = child;
-      }
-    }
-    return node;
-  }
-
   public static Pair<NodeIS,Session> expand(NodeIS node,Session determinization){
     ArrayList<Move> possible = movesFromDetNotInNodeChildren(node,determinization);
     Random random = new Random();
@@ -91,7 +72,7 @@ public class MonteCarloIS {
     return new Pair<>(node,determinization);
   }
 
-  public static int simulate(Session determinization,boolean heavy){
+  public static int simulate(Session determinization,boolean heavy,int rewardStrategy,int player){
     Player one;
     Player two;
     if(heavy){
@@ -103,7 +84,19 @@ public class MonteCarloIS {
     }
     determinization.setPlayer(one,two);
     int[] scores = determinization.simGame();
-    return (scores[0]>scores[1])?1:2;
+    if(rewardStrategy==0) {
+      int winner = (scores[0]>scores[1])?1:2;
+      return (winner==player)?1:0;
+    }
+    if(rewardStrategy==1){
+      if(player==1) return scores[0]-scores[1];
+      return scores[1]-scores[0];
+    }
+    if(rewardStrategy==2){
+      int winner = (scores[0]>scores[1])?1:2;
+      return (winner==player)?1:-1;
+    }
+    return 0;
   }
 
   public static boolean backPropagate(int reward,NodeIS node){
@@ -142,7 +135,7 @@ public class MonteCarloIS {
         if(expMovePossible){
           moves.add(new Move(i,true,possibleDraws[j]));
         }
-        if(color!=possibleDraws[j]){
+        if(color+1!=possibleDraws[j]){
           moves.add(new Move(i,false,possibleDraws[j]));
         }
       }

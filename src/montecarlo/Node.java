@@ -1,5 +1,6 @@
 package montecarlo;
 
+import game.Move;
 import game.Session;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,15 +11,19 @@ import java.util.HashSet;
  */
 public class Node {
 
-  Session state;
+  Move incomingMove;
   Node parent;
   HashSet<Node> children;
   int simulationsPlayed;
   int simulationsWon; // rewards
 
-  public Node(Session game) {
-    state = game;
+  public Node(Move move) {
+    incomingMove = move;
     children = new HashSet<>();
+  }
+
+  public Node(){
+
   }
 
   /**
@@ -38,15 +43,6 @@ public class Node {
   }
 
   /**
-   * This method is called to determine whether the node
-   * represents a state where the game is over.
-   * @return true if game over
-   */
-  public boolean isTerminal(){
-    return state.isOver();
-  }
-
-  /**
    * This method compares the number of children (expanded states from current node) to the amount
    * of states that could be expanded.
    * @return true if all possible states have been expanded
@@ -60,9 +56,11 @@ public class Node {
   }
 
   public void expandAll(){
-    ArrayList<Session> possibleStates = this.state.getPossibleStates();
-    for(Session s : possibleStates){
-      Node newChild = new Node(s);
+    ArrayList<Move> moves = null;
+    //ArrayList<Session> possibleStates = this.state.getPossibleStates();
+    for(Move s : moves){
+      Node newChild = new Node();
+      //newChild
       this.children.add(newChild);
       newChild.setParent(this);
     }
@@ -84,9 +82,6 @@ public class Node {
     return true;
   }
   /** Set methods */
-  public void setState(Session state) {
-    this.state = state;
-  }
 
   public void setParent(Node parent) {
     this.parent = parent;
@@ -107,10 +102,6 @@ public class Node {
   /** Get methods */
   public Node getParent() {
     return parent;
-  }
-
-  public Session getState() {
-    return state;
   }
 
   public HashSet<Node> getChildren() {

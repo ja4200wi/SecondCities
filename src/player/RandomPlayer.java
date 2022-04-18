@@ -12,7 +12,7 @@ public class RandomPlayer extends Player{
   public RandomPlayer(Player player){super(player);}
 
   @Override
-  public Move makeMove(Card[] myHand,Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile,boolean turn) {
+  public Move makeMove(Card[] myHand,Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile,boolean turn,int turnCounter) {
     boolean onExp;
     int random = (int) (Math.random() * 8);
     Card c = myHand[random];

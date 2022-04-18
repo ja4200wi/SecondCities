@@ -6,7 +6,7 @@ import game.Session;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class RuleBasedPlayer extends Player {
+public class RuleBasedPlayerALT extends Player {
 
   /**
    * playColor tells for each color if agents pursues to play this expedition
@@ -14,7 +14,7 @@ public class RuleBasedPlayer extends Player {
    */
   private boolean[] playColor = {false, false, false, false, false};
 
-  public RuleBasedPlayer(){super();}
+  public RuleBasedPlayerALT(){super();}
 
   @Override
   public Move makeMove(Card[] myHand,Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile,boolean turn,int turnCounter) {
@@ -25,15 +25,10 @@ public class RuleBasedPlayer extends Player {
     index = obviousPlacement(myHand,myExp);
     onExp = true;
     if (index == -1) {
-      index = startExpedition(myHand,myExp);
+      index = startExpedition(myHand,myExp,oppExp,discardPile);
       onExp = true;
       //if(index!=-1) System.out.println("Start Expedition Rule");
     }
-    /*if (index == -1) {
-      index = dropCardNoOneNeeds(myExp,oppExp,discardPile);
-      onExp = false;
-      //if(index!=-1) System.out.println("Drop game.Card No One Needs Rule");
-    }*/
     if (index == -1) {
       int[] indicesCardsOpponentWants = dontGiveOpponentCardNeeded(myHand,oppExp);
       boolean placed = false;
@@ -70,8 +65,9 @@ public class RuleBasedPlayer extends Player {
     return null;
   }
 
-  public int startExpedition(Card[] myHand,Stack<Card>[] myExp){
-    decideColorsToPlay(myHand);
+  public int startExpedition(Card[] myHand,Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile){
+    //decideColorsToPlay(myHand);
+    decideColorsToPlay(myHand,myExp,oppExp,discardPile);
     for(int i = 0;i<5;i++){
       if(playColor[i]){
         if(Player.getTopCard(myExp[i])==null) return findLowestOfColor(i,myHand);
@@ -90,6 +86,41 @@ public class RuleBasedPlayer extends Player {
     }
   }
 
+  public void decideColorsToPlay(Card[] myHand,Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile){
+    double[] expectedPerColor = {0,0,0,0,0};
+    int maxPointsPerColor = 54; //2+3+4+5+6+7+8+9+10
+    for(int i = 0;i<5;i++){
+      int pointsOwned = getPointsOwned(myHand,myExp[i],i);
+      int pointsObtainable = getPointsObtainable(pointsOwned,oppExp[i],i);
+      //Assumption that remaining cards are drawn by player with same likelihood
+      expectedPerColor[i] = pointsOwned + (double) pointsObtainable/2;
+    }
+    for(int i = 0;i<5;i++) {
+      if(expectedPerColor[i]>=36) playColor[i] = true;
+    }
+  }
+
+  //TODO: Idee -> oberste discardPile hinzufügen
+  public int getPointsObtainable(int pointsOwned,Stack<Card> oppExp,int color){
+    int maxPointsObtainable = 54;
+    maxPointsObtainable -= pointsOwned;
+    for(Card c : oppExp){
+      if(c.getColor()==color && !c.isCoinCard()) maxPointsObtainable -= c.getValue();
+    }
+    return maxPointsObtainable;
+  }
+
+  public int getPointsOwned(Card[] myHand,Stack<Card> myExp,int color){
+    int pointsOwned = 0;
+    for(Card c : myHand){
+      if(c.getColor()==color && !c.isCoinCard()) pointsOwned += c.getValue();
+    }
+    for(Card c : myExp){
+      if(c.getColor()==color && !c.isCoinCard()) pointsOwned += c.getValue();
+    }
+    return pointsOwned;
+  }
+
   public int dropCardNoOneNeeds(Card[] myHand,Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile){
     int cardColor;
     int cardValue;
@@ -99,13 +130,15 @@ public class RuleBasedPlayer extends Player {
     for(int i = 0;i<8;i++) {
       cardColor = myHand[i].getColor();
       cardValue = myHand[i].getValue();
-      if (Player.getTopCard(myExp[cardColor]) != null
-          && Player.getTopCard(oppExp[cardColor]) != null) {
-        topExpCardValue = Player.getTopCard(myExp[cardColor]).getValue();
-        topExpCardOppValue = Player.getTopCard(myExp[cardColor]).getValue();
-        if (cardValue < topExpCardValue && cardValue < topExpCardOppValue
-            && topExpCardValue<11 && topExpCardOppValue<11)
-          return i;
+      if(!playColor[cardColor]) {
+        if (Player.getTopCard(myExp[cardColor]) != null
+            && Player.getTopCard(oppExp[cardColor]) != null) {
+          topExpCardValue = Player.getTopCard(myExp[cardColor]).getValue();
+          topExpCardOppValue = Player.getTopCard(myExp[cardColor]).getValue();
+          if (cardValue < topExpCardValue && cardValue < topExpCardOppValue && topExpCardValue > 1
+              && topExpCardOppValue > 1)
+            return i;
+        }
       }
     }
     return -1;

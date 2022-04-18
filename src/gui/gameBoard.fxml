@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseMoved="#updateScreen" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #031812;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameController">
+   <center>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" layoutX="232.0" layoutY="10.0" prefHeight="200.0" prefWidth="125.0">
+               <children>
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #f1c40f;" vbarPolicy="NEVER">
+                     <content>
+                        <VBox fx:id="expYellow2" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #f1c40f;" />
+                     </content>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+                  <Button fx:id="discardYellowButton1" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: #f1c40f; -fx-background-radius: 10;">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                  </Button>
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #f1c40f;" vbarPolicy="NEVER">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     <content>
+                        <VBox fx:id="expYellow1" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #f1c40f;" />
+                     </content>
+                  </ScrollPane>
+               </children>
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="368.0" layoutY="10.0" prefHeight="200.0" prefWidth="125.0">
+               <children>
+                  <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="295.0" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #f1c4 #2980b90f;" vbarPolicy="NEVER">
+                     <content>
+                        <VBox fx:id="expBlue2" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #2980b9;" />
+                     </content>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+                  <Button fx:id="discardBlueButton2" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: #2980b9; -fx-background-radius: 10;">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Button>
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #2980b9;" vbarPolicy="NEVER">
+                     <content>
+                        <VBox fx:id="expBlue1" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #2980b9;" />
+                     </content>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+               </children>
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="503.0" layoutY="10.0" prefHeight="200.0" prefWidth="125.0">
+               <children>
+                  <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="295.0" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #666666;" vbarPolicy="NEVER">
+                     <content>
+                        <VBox fx:id="expWhite2" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #ffffff;" />
+                     </content>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+                  <Button fx:id="discardWhiteButton3" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Button>
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #666666;" vbarPolicy="NEVER">
+                     <content>
+                        <VBox fx:id="expWhite1" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #ffffff;" />
+                     </content>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+               </children>
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="639.0" layoutY="10.0" prefHeight="200.0" prefWidth="125.0">
+               <children>
+                  <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="295.0" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #27ae60;" vbarPolicy="NEVER">
+                     <content>
+                        <VBox fx:id="expGreen2" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #27ae60;" />
+                     </content>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+                  <Button fx:id="discardGreenButton4" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: #27ae60; -fx-background-radius: 10;">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Button>
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #27ae60;" vbarPolicy="NEVER">
+                     <content>
+                        <VBox fx:id="expGreen1" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #27ae60;" />
+                     </content>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+               </children>
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="125.0">
+               <children>
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #c0392b;" vbarPolicy="NEVER">
+                     <content>
+                        <VBox fx:id="expRed2" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #c0392b;" />
+                     </content>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+                  <Button fx:id="discardRedButton5" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: #c0392b; -fx-background-radius: 10;">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Button>
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #c0392b;" vbarPolicy="NEVER">
+                     <content>
+                        <VBox fx:id="expRed1" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #c0392b;" />
+                     </content>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+               </children>
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+   <top>
+      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="390.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="player1Label" text="Player 1: " textFill="WHITE">
+                     <HBox.margin>
+                        <Insets left="30.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="player1Score" text="Score: " textFill="WHITE">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="390.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="player2Label" text="Player 2: " textFill="WHITE">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="player2Score" text="Score: " textFill="WHITE">
+                     <HBox.margin>
+                        <Insets right="30.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+   </top>
+   <bottom>
+      <HBox maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <GridPane prefHeight="100.0" prefWidth="540.0" HBox.hgrow="ALWAYS">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="p1Card1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p1Card2" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p1Card4" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p1Card7" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p1Card6" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p1Card5" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p1Card3" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p1Card8" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+               </children>
+               <HBox.margin>
+                  <Insets right="50.0" />
+               </HBox.margin>
+            </GridPane>
+            <GridPane layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="540.0" HBox.hgrow="ALWAYS">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Button fx:id="p2Card1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p2Card2" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p2Card4" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p2Card7" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p2Card6" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p2Card5" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p2Card3" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+                  <Button fx:id="p2Card8" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectCard" prefHeight="50.0" prefWidth="100.0" text="White CC" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+               </children>
+               <HBox.margin>
+                  <Insets left="50.0" />
+               </HBox.margin>
+            </GridPane>
+         </children>
+      </HBox>
+   </bottom>
+   <right>
+      <Button fx:id="expButton" mnemonicParsing="false" onAction="#putOnExpedition" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: #6e2c00; -fx-background-radius: 10;" text="Put on Expedition" textAlignment="CENTER" textFill="WHITE" wrapText="true" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="18.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets right="30.0" />
+         </BorderPane.margin>
+      </Button>
+   </right>
+   <left>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="125.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Label" textFill="#031812">
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </Label>
+            <Button fx:id="drawDeck" mnemonicParsing="false" onAction="#drawFromDeck" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: #6e2c00; -fx-background-radius: 10;" text="Draw Deck" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Label fx:id="remainingCards" text="Remaining Cards:" textFill="WHITE" wrapText="true">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Label>
+         </children>
+         <BorderPane.margin>
+            <Insets left="30.0" />
+         </BorderPane.margin>
+      </VBox>
+   </left>
+</BorderPane>
