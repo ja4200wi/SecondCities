@@ -7,6 +7,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * @author Jann Winter
+ * This class represents the application started for GUI interaction.
+ */
+
 public class Main extends Application {
 
     private static Stage stg;

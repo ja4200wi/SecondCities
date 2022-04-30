@@ -1,8 +1,9 @@
 package player;
 
-import game.Card;
-import java.util.ArrayList;
-import java.util.Stack;
+/**
+ * @author Jann Winter
+ * This abstract class is used to set a method necessary for players with memory.
+ */
 
 public abstract class MemoryPlayer extends Player{
 

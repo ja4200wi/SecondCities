@@ -6,6 +6,11 @@ import game.Session;
 import java.util.ArrayList;
 import java.util.Stack;
 
+/**
+ * @author Jann Winter
+ * This calss represents a QuickRule player.
+ */
+
 public class RuleBasedPlayer extends Player {
 
   /**
@@ -29,13 +34,7 @@ public class RuleBasedPlayer extends Player {
     if (index == -1) {
       index = startExpedition(myHand,myExp);
       onExp = true;
-      //if(index!=-1) System.out.println("Start Expedition Rule");
     }
-    /*if (index == -1) {
-      index = dropCardNoOneNeeds(myExp,oppExp,discardPile);
-      onExp = false;
-      //if(index!=-1) System.out.println("Drop game.Card No One Needs Rule");
-    }*/
     if (index == -1) {
       int[] indicesCardsOpponentWants = dontGiveOpponentCardNeeded(myHand,oppExp);
       boolean placed = false;
@@ -62,7 +61,6 @@ public class RuleBasedPlayer extends Player {
     }
     /**Drawing*/
     drawFrom = drawUsefulCard(myExp,discardPile);
-    //if(drawFrom!=-1) System.out.println("Draw Useful game.Card Rule");
     if(drawFrom==-1) drawFrom = 0;
     return new Move(index,onExp,drawFrom);
   }
@@ -72,6 +70,12 @@ public class RuleBasedPlayer extends Player {
     return null;
   }
 
+  /**
+   * Detrmine index of lowest placeable card onto expedition
+   * @param myHand
+   * @param myExp
+   * @return
+   */
   public int startExpedition(Card[] myHand,Stack<Card>[] myExp){
     //decideColorsToPlay(myHand);
     int[] pointsPerColor = {0,0,0,0,0};
@@ -133,6 +137,12 @@ public class RuleBasedPlayer extends Player {
     return indexOfCard;
   }
 
+  /**
+   * Determine index of a card that obviously will be a good placement
+   * @param myHand
+   * @param myExp
+   * @return
+   */
   public int obviousPlacement(Card[] myHand,Stack<Card>[] myExp){
     Card[] topExpCards = new Card[5];
     int count = 0;
@@ -149,6 +159,12 @@ public class RuleBasedPlayer extends Player {
     return -1;
   }
 
+  /**
+   * Determine index to draw from to draw a useful card
+   * @param myExp
+   * @param discardPile
+   * @return
+   */
   public int drawUsefulCard(Stack<Card>[] myExp,Stack<Card>[] discardPile){
     Card[] topDiscard = new Card[5];
     for(int i = 0;i<5;i++) {
@@ -166,6 +182,13 @@ public class RuleBasedPlayer extends Player {
     return -1;
   }
 
+  /**
+   * Determine the number of reminaing cards on the draw stack
+   * @param myExp
+   * @param oppExp
+   * @param discardPile
+   * @return
+   */
   public int getNumberOfCardsLeft(Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[]discardPile){
     int totalCards = 54;
     for(Stack<Card> e : myExp) totalCards -= e.size();
@@ -174,6 +197,12 @@ public class RuleBasedPlayer extends Player {
     return  totalCards;
   }
 
+  /**
+   * Make sure to not discard cards the opponent could use on their expedition
+   * @param myHand
+   * @param oppExp
+   * @return
+   */
   public int[] dontGiveOpponentCardNeeded(Card[] myHand,Stack<Card>[] oppExp){
     ArrayList<Integer> indices = new ArrayList<>();
     for(int i = 0;i<8;i++){
@@ -184,6 +213,12 @@ public class RuleBasedPlayer extends Player {
     return indices.stream().mapToInt(Integer::intValue).toArray();
   }
 
+  /**
+   * Determine whether a numer is in an array
+   * @param number
+   * @param array
+   * @return
+   */
   public static boolean isInArray(int number,int[] array){
     for(int i : array){
       if(number==i) return true;
@@ -191,6 +226,13 @@ public class RuleBasedPlayer extends Player {
     return false;
   }
 
+  /**
+   * Always place lowest cards from hand.
+   * @param myHand
+   * @param index
+   * @param myExp
+   * @return
+   */
   public int makeSureLowestCardPlayed(Card[] myHand,int index,Stack<Card>[] myExp){
     Card chosen = myHand[index];
     if(chosen.isCoinCard()) return index;

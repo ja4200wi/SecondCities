@@ -6,6 +6,11 @@ import game.Session;
 import java.util.ArrayList;
 import java.util.Stack;
 
+/**
+ * @author Jann Winter
+ * This class represents a RandomPlayer.
+ */
+
 public class RandomPlayer extends Player{
 
   public RandomPlayer(){}

@@ -5,6 +5,11 @@ import game.Move;
 import game.Session;
 import java.util.Stack;
 
+/**
+ * @author Jann Winter
+ * This abstract class defines important abstract methods to be implemented by subclasses for game play.
+ */
+
 public abstract class Player {
 
   boolean isCheating = false;
@@ -67,6 +72,13 @@ public abstract class Player {
     return false;
   }
 
+  /**
+   * This method can be used to print hte current state of the game only showing public information.
+   * @param myExp player's expedition
+   * @param oppExp opponent's expedition
+   * @param discardPile
+   * @param scores scores of both players
+   */
   public static void printGameBoard(Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile,int[] scores){
     StringBuilder sb = new StringBuilder("GameBoard:\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tPlayer1 -> "
         + scores[0] + " : Player2 -> " + scores[1] +"\nOpponent Expeditions:\t");

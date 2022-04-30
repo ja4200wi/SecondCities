@@ -6,6 +6,11 @@ import game.Session;
 import java.util.ArrayList;
 import java.util.Stack;
 
+/**
+ * @author Jann Winter
+ * This class represents a rule-based agent
+ */
+
 public class LikeHumanPlayer extends MemoryPlayer{
 
   private boolean[] playColor = {false, false, false, false, false};
@@ -50,45 +55,13 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return new Move(playIndex,onExp,drawFrom);
   }
 
-  public int findLowestDiscardableCard(int[] lowestOfColor,Card[] hand){
-    int valueLowestCardDiscarable = 100;
-    int indexOfLowestCardDiscardable = -1;
-    for(int i = 0;i<5;i++){
-      if(!playColor[i] && lowestOfColor[i]!=-1 &&  hand[lowestOfColor[i]].getValue()<valueLowestCardDiscarable) {
-        valueLowestCardDiscarable = hand[lowestOfColor[i]].getValue();
-        indexOfLowestCardDiscardable = lowestOfColor[i];
-      }
-    }
-    return indexOfLowestCardDiscardable;
-  }
-
-  public static boolean checkDistanceTopExpAndNew(Card card,int[] topValuesOnExp,int maxDistanceAllowed){
-    int color = card.getColor();
-    if(card.getValue()<=topValuesOnExp[color]+maxDistanceAllowed) return true;
-    return false;
-  }
-
-  public int dropCardNoOneNeeds(Card[] myHand,Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile,int remainingCards){
-    int cardColor;
-    int cardValue;
-    int topExpCardValue;
-    int topExpCardOppValue;
-    //if(remainingCards<30) return -1;
-    for(int i = 0;i<8;i++) {
-      cardColor = myHand[i].getColor();
-      cardValue = myHand[i].getValue();
-      if (Player.getTopCard(myExp[cardColor]) != null
-          && Player.getTopCard(oppExp[cardColor]) != null) {
-        topExpCardValue = Player.getTopCard(myExp[cardColor]).getValue();
-        topExpCardOppValue = Player.getTopCard(myExp[cardColor]).getValue();
-        if (cardValue < topExpCardValue && cardValue < topExpCardOppValue
-            && topExpCardValue<11 && topExpCardOppValue<11)
-          return i;
-      }
-    }
-    return -1;
-  }
-
+  /**
+   * This method determines the number of remaining cards on the draw stack
+   * @param myExp
+   * @param oppExp
+   * @param discardPile
+   * @return
+   */
   public static int calcRemainingCards(Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile){
     int cardsOnBoard = 0;
     for(int i = 0;i<5;i++){
@@ -99,6 +72,11 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return 44-cardsOnBoard;
   }
 
+  /**
+   * This funciton can determine the maximum space allowed between two cards placed on expeditions
+   * @param remainingCards
+   * @return
+   */
   public static int maxDistanceBetweenExpCards(int remainingCards){
     int yIntercept = 10;
     double slope = (double)0;
@@ -106,6 +84,13 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return (int) functionValue; //UNTERE GAUSSKLAMMER
   }
 
+  /**
+   * This method returns the lowest placeable card on the expeditions
+   * @param hand
+   * @param playableColors
+   * @param myExp
+   * @return
+   */
   public int findLowestPlayableCard(Card[] hand,int[] playableColors,Stack<Card>[] myExp){
     int valueLowestPlayableCard = 100;
     int indexOfLowestPlayableCard = -1;
@@ -120,6 +105,12 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return indexOfLowestPlayableCard;
   }
 
+  /**
+   * Get the cards on hand of a color
+   * @param hand
+   * @param color
+   * @return
+   */
   public ArrayList<Card> getCardsOfColor(Card[] hand,int color){
     ArrayList<Card> cardsOfColor = new ArrayList<>();
     for(Card c : hand){
@@ -128,6 +119,10 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return cardsOfColor;
   }
 
+  /**
+   * Get the colors decided to play as expedition
+   * @return
+   */
   public int[] getColorsPlayable(){
     int countPlayableCards = 0;
     for(int i = 0;i<5;i++) if(playColor[i]) countPlayableCards++; //LOOP COUNTS HOW MANY EXPS I PLAY
@@ -137,6 +132,12 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return colorsPlayable;
   }
 
+  /**
+   * Check if the discard pile holds a card i could place onto one the started expeditions
+   * @param myExp
+   * @param discardPile
+   * @return
+   */
   public int drawUsefulCard(Stack<Card>[] myExp,Stack<Card>[] discardPile){
     Card[] topDiscard = new Card[5];
     for(int i = 0;i<5;i++) {
@@ -153,6 +154,10 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return 0;
   }
 
+  /**
+   * Check if expedition to play is available
+   * @return
+   */
   public boolean playColorAvailable(){
     for(int i=0;i<5;i++){
       if(playColor[i]) return true;
@@ -160,6 +165,11 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return false;
   }
 
+  /**
+   * Get the lowest cards of each color on hand
+   * @param hand
+   * @return
+   */
   public static  int[] getLowestCards(Card[] hand){
     int[] indicesOfLowestCards = new int[]{-1,-1,-1,-1,-1};
     for(int i = 0;i<5;i++){
@@ -168,6 +178,10 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return indicesOfLowestCards;
   }
 
+  /**
+   * Set the colors the opponent plays
+   * @param oppExp
+   */
   public void checkColorsOppPlays(Stack<Card>[] oppExp){
     for(int i = 0;i<5;i++){
       if(!oppExp[i].isEmpty()) {
@@ -176,6 +190,11 @@ public class LikeHumanPlayer extends MemoryPlayer{
     }
   }
 
+  /**
+   * Get an int array holding the values of the top cards on stacks
+   * @param myExp
+   * @return
+   */
   public static int[] getValuesOfTopCards(Stack<Card>[] myExp){
     int[] topValues = new int[]{0,0,0,0,0};
     for(int i = 0;i<5;i++){
@@ -188,6 +207,12 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return topValues;
   }
 
+  /**
+   * Check if an array holds a number
+   * @param array
+   * @param number
+   * @return
+   */
   public static boolean arrayContainsNumber(int[] array,int number){
     for(int i = 0;i< array.length;i++){
       if(array[i]==number) return true;
@@ -195,6 +220,13 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return false;
   }
 
+  /**
+   * Check what expeditions can be started.
+   * @param myHand
+   * @param myExp
+   * @param oppExp
+   * @param discardPile
+   */
   public void decideColorsToPlay(Card[] myHand,Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile){
     double[] expectedPerColor = {0,0,0,0,0};
     int[] pointsOwned = {0,0,0,0,0};
@@ -205,11 +237,20 @@ public class LikeHumanPlayer extends MemoryPlayer{
       expectedPerColor[i] = pointsOwned[i] + (double) pointsObtainable/2;
     }
     for(int i = 0;i<5;i++) {
-      if(true) playColor[i] = true; //expectedPerColor[i]>=32 && pointsOwned[i]>14
+      if(expectedPerColor[i]>=32 && pointsOwned[i]>14) playColor[i] = true; //expectedPerColor[i]>=32 && pointsOwned[i]>14
     }
   }
 
   //TODO: Idee -> oberste discardPile hinzufügen
+
+  /**
+   * Determines points still obtainable, which is sum of all cards of a color minus the cards on expeditions and player's hand.
+   * @param pointsOwned
+   * @param oppExp
+   * @param color
+   * @param discardPileOfColor
+   * @return
+   */
   public int getPointsObtainable(int pointsOwned,Stack<Card> oppExp,int color,Stack<Card> discardPileOfColor){
     int maxPointsObtainable = 54; //2+3+4+5+6+7+8+9+10
     maxPointsObtainable -= pointsOwned;
@@ -219,6 +260,13 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return maxPointsObtainable;
   }
 
+  /**
+   * Calculate points owned of a color, which includes poiints on hand and expedition
+   * @param myHand
+   * @param myExp
+   * @param color
+   * @return
+   */
   public int getPointsOwned(Card[] myHand,Stack<Card> myExp,int color){
     int pointsOwned = 0;
     for(Card c : myHand){
@@ -230,6 +278,11 @@ public class LikeHumanPlayer extends MemoryPlayer{
     return pointsOwned;
   }
 
+  /**
+   * Return index of lowest card on hand but is not coin card
+   * @param myHand
+   * @return
+   */
   public static int findLowestCardNoCC(Card[] myHand){
     int indexOfCard = -1;
     for(int i = 0;i<8;i++){
@@ -269,6 +322,67 @@ public class LikeHumanPlayer extends MemoryPlayer{
       }
     }
     return indexOfCard;
+  }
+
+  /**
+   * Return index of lowest card player wants to discard
+   * @param lowestOfColor
+   * @param hand
+   * @return
+   */
+  public int findLowestDiscardableCard(int[] lowestOfColor,Card[] hand){
+    int valueLowestCardDiscarable = 100;
+    int indexOfLowestCardDiscardable = -1;
+    for(int i = 0;i<5;i++){
+      if(!playColor[i] && lowestOfColor[i]!=-1 &&  hand[lowestOfColor[i]].getValue()<valueLowestCardDiscarable) {
+        valueLowestCardDiscarable = hand[lowestOfColor[i]].getValue();
+        indexOfLowestCardDiscardable = lowestOfColor[i];
+      }
+    }
+    return indexOfLowestCardDiscardable;
+  }
+
+  /**
+   * Check if a card selected for placement leaves to much space between previous card on expedition
+   * @param card
+   * @param topValuesOnExp
+   * @param maxDistanceAllowed
+   * @return
+   */
+  public static boolean checkDistanceTopExpAndNew(Card card,int[] topValuesOnExp,int maxDistanceAllowed){
+    int color = card.getColor();
+    if(card.getValue()<=topValuesOnExp[color]+maxDistanceAllowed) return true;
+    return false;
+  }
+
+  /**
+   * Discard cards no one can use anymore
+   * @param myHand
+   * @param myExp
+   * @param oppExp
+   * @param discardPile
+   * @param remainingCards
+   * @return
+   */
+  public int dropCardNoOneNeeds(Card[] myHand,Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile,int remainingCards){
+    int cardColor;
+    int cardValue;
+    int topExpCardValue;
+    int topExpCardOppValue;
+    //if(remainingCards<30) return -1;
+    for(int i = 0;i<8;i++) {
+      cardColor = myHand[i].getColor();
+      cardValue = myHand[i].getValue();
+      if (Player.getTopCard(myExp[cardColor]) != null
+          && Player.getTopCard(oppExp[cardColor]) != null) {
+        topExpCardValue = Player.getTopCard(myExp[cardColor]).getValue();
+        topExpCardOppValue = Player.getTopCard(myExp[cardColor]).getValue();
+        if (cardValue < topExpCardValue && cardValue < topExpCardOppValue
+            && topExpCardValue<11 && topExpCardOppValue<11)
+          return i;
+      }
+    }
+    return -1;
   }
 
   @Override

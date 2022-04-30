@@ -41,16 +41,6 @@ public class Session {
     turn = true;
   }
 
-
-  public Session(Player p1,Player p2,Stack<Card> drawStack){
-    this.drawStack = drawStack;
-    discardPile = new Stack[]{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()};
-    expeditions = new Stack[][]{{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()},
-        {new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()}};
-    initPlayers(p1,p2);
-    turn = true;
-  }
-
   /**
    * Constructor responsible for creation of determinizations
    * @param playerHands used to initalize placers' cards
@@ -89,6 +79,12 @@ public class Session {
     turn = copy.isTurn();
   }
 
+  /**
+   * This method starts a game of Lost Cities and calls the players makeMove function to receive
+   * their answers until the game is over.
+   * @return array holding the players' scores, turncounter, counter for plays on exp,
+   * number of draws from discard pile, and both players number of expeditions started.
+   */
   public int[] playGame(){
     int countOnExp = 0;
     int drawFromDiscardCount = 0;
@@ -117,16 +113,9 @@ public class Session {
     return gameEndInformation;
   }
 
-  public int countExpsStarted(boolean p1){
-    int numberExpStarted = 0;
-    if(p1) for(int i = 0;i<5;i++) if(expeditions[0][i].size()>0) numberExpStarted++;
-    if(!p1) for(int i = 0;i<5;i++) if(expeditions[1][i].size()>0) numberExpStarted++;
-    return numberExpStarted;
-  }
-
   /**
-   * Executes game and returns winner.
-   * @return true if player 1 is winner
+   * Executes as the playGame method but with additional print commands for each turn.
+   * @return similar game statistics
    */
   public int[] playGameWithPrints(){
     int countOnExp = 0;
@@ -165,7 +154,6 @@ public class Session {
       }
       if(made.onExp) countOnExp++;
       executeMove(made);
-      //System.out.println("Move made -> Cards left:" + drawStack.size());
     }
     int[] gameEndInformation = new int[4];
     int[] scores = calcPoints();
@@ -176,21 +164,10 @@ public class Session {
     return gameEndInformation;
   }
 
-  public void printHand(Card[] myHand){
-    StringBuilder sb = new StringBuilder("My cards: ");
-    int counter = 1;
-    for(Card c: myHand){
-      sb.append("\tCard " + counter++);
-      sb.append(c);
-      sb.append(", \t");
-    }
-    System.out.println(sb);
-  }
-
-  private void printDivider(){
-    System.out.println("__________________________________________________________________________");
-  }
-
+  /**
+   * This method is called from a GUI and alters the way moves are collected from players in the
+   * way that the program waits until the GUI calls the method again. Basically, a recursive method.
+   */
   public void playGameWithGUI(){
     if(!this.isOver()){
       int atTurn = (turn)?0:1;
@@ -207,6 +184,10 @@ public class Session {
     }
   }
 
+  /**
+   * This method is the simplest form of game flow execution used for fast simulations during the MCTS loop.
+   * @return the scores
+   */
   public int[] simGame(){
     while(!this.isOver() && turnCounter<150){
       int atTurn = (turn)?0:1;
@@ -237,7 +218,7 @@ public class Session {
     } else {
       drawFromDiscardPile(drawFrom,cardIndex,player);
     }
-    turn = !turn;
+    switchTurn();
     return true;//subject to change @TODO
   }
 
@@ -312,6 +293,37 @@ public class Session {
   }
 
   /**
+   * This method counts the number of non-empty expedtions of a player.
+   * @param p1 is used to select the player where true is player 1 and
+   * @return
+   */
+  public int countExpsStarted(boolean p1){
+    int numberExpStarted = 0;
+    if(p1) for(int i = 0;i<5;i++) if(expeditions[0][i].size()>0) numberExpStarted++;
+    if(!p1) for(int i = 0;i<5;i++) if(expeditions[1][i].size()>0) numberExpStarted++;
+    return numberExpStarted;
+  }
+
+  /**
+   * This method is used to print an array of cards
+   * @param myHand is the array of cards to print
+   */
+  public void printHand(Card[] myHand){
+    StringBuilder sb = new StringBuilder("My cards: ");
+    int counter = 1;
+    for(Card c: myHand){
+      sb.append("\tCard " + counter++);
+      sb.append(c);
+      sb.append(", \t");
+    }
+    System.out.println(sb);
+  }
+
+  private void printDivider(){
+    System.out.println("__________________________________________________________________________");
+  }
+
+  /**
    * This method sets the player array and deals starting cards to players.
    * @param p1 is the first player
    * @param p2 is the second player
@@ -360,6 +372,9 @@ public class Session {
     drawStack = cardArrayToStack(wholeSetOfCards);
   }
 
+  /**
+   * Fill players' cards with cards.
+   */
   private void initPlayerCards() {
     for(int i = 0;i<8;i++){
       playercards[0][i] = drawStack.pop();
@@ -374,11 +389,9 @@ public class Session {
    * @return Returns array wit the same Cards, but in different order.
    */
   private static void shuffleArray(Card[] cardArray) {
-    // If running on Java 6 or older, use `new Random()` on RHS here
     Random rnd = ThreadLocalRandom.current();
     for (int i = cardArray.length - 1; i > 0; i--) {
       int index = rnd.nextInt(i + 1);
-      // Simple swap
       Card c = cardArray[index];
       cardArray[index] = cardArray[i];
       cardArray[i] = c;
@@ -398,6 +411,11 @@ public class Session {
     return result;
   }
 
+  /**
+   * Print the top cards of an array of stacks
+   * @param stacks to print the top cards of
+   * @return the string representation
+   */
   private String topOfStacksToString(Stack<Card>[] stacks){
     StringBuilder sb = new StringBuilder("{");
     for(Stack<Card> color : stacks){
@@ -408,6 +426,11 @@ public class Session {
     return String.valueOf(sb);
   }
 
+  /**
+   * This method prints all cards of mutiple stacks
+   * @param stacks is the array of stacks of cards
+   * @return a string holding all cards
+   */
   private String stacksToString(Stack<Card>[] stacks){
     StringBuilder sb = new StringBuilder("{");
     for(Stack<Card> color : stacks){
@@ -421,23 +444,34 @@ public class Session {
     return String.valueOf(sb);
   }
 
+  /**
+   * Method uses turn to return current player's cards
+   * @return card array
+   */
   public Card[] getHandAtTurn(){ return (turn)?playercards[0]:playercards[1]; }
 
+  /**
+   * Method uses turn to return current player's expeditions
+   * @return array of stack of cards representing the expeditions
+   */
   public Stack<Card>[] getExpAtTurn(){ return (turn)?expeditions[0]:expeditions[1]; }
-
-
-  public boolean isTurn(){
-    return turn;
-  }
 
   public void switchTurn(){
     turn = !turn;
   }
 
+  /**
+   * This method tells whether the game is finished based on th size of the drawstack and a maximum number of turns.
+   * @return true if game is over
+   */
   public boolean isOver(){
     if(drawStack.isEmpty()) return true;
     if(turnCounter>100) return true;
     return false;
+  }
+
+  public boolean isTurn(){
+    return turn;
   }
 
   public void setPlayer(Player p1,Player p2){
@@ -445,6 +479,11 @@ public class Session {
     players[1] = p2;
   }
 
+  /**
+   * Method gives cards of a player.
+   * @param player indicating player of interest -> true = player 1
+   * @return cards of player
+   */
   public Card[] getPlayerHand(boolean player){
     return (player)?playercards[0]:playercards[1];
   }
@@ -452,6 +491,19 @@ public class Session {
   public Stack<Card>[] getPlayerExpeditions(boolean player){
     return (player)?expeditions[0]:expeditions[1];
   }
+
+  public int getNumberCardsLeft(){
+    return drawStack.size();
+  }
+
+  public Stack<Card>[] getDiscardPile() {
+    return discardPile;
+  }
+
+  public Stack<Card>[][] getExpeditions() {
+    return expeditions;
+  }
+
 
   @Override
   public String toString() {
@@ -463,71 +515,6 @@ public class Session {
         "\nExpeditions Player 2 " + stacksToString(expeditions[1]) +
         "\nScore Player 1: " + scores[0] +
         "\tScore Player 2. " + scores[1];
-  }
-
-  public int getNumberCardsLeft(){
-    return drawStack.size();
-  }
-
-  /**
-   * This method creates a list with all states reachable through one player move.
-   * @return list of Sessions which could result from the player's move
-   */
-  public ArrayList<Session> getPossibleStates(){
-    ArrayList<Session> possibleStates = new ArrayList<>();
-    Card [] hand = getHandAtTurn(); // Cards that can be placed
-    int[] possibleDraws = getPossibleDrawsInt();
-    int possibleDrawsLength = possibleDraws.length;// Cards that could be drawn
-    int playerAtTurn = (turn)?0:1;
-    for(int i = 0;i<8;i++) {
-      int color = hand[i].getColor();
-      for(int j = 0;j<possibleDrawsLength;j++) {
-        for(int k = 0;k<2;k++){ // k=0 bedeutet Karte auf exp gelegt
-          Session addState = null;
-          if(k==1) { // Karte wird auf discardPile gelegt
-            if(j==0) {
-              addState = new Session(this);
-              addState.putOnDiscardPile(i,playerAtTurn);
-              addState.drawFromStack(i,playerAtTurn);
-            } else {
-              if(color!=possibleDraws[j]-1) {
-                addState = new Session(this);
-                addState.putOnDiscardPile(i,playerAtTurn);
-                addState.drawFromDiscardPile(possibleDraws[j],i,playerAtTurn);
-              }
-            }
-            if(addState!=null) {
-              addState.switchTurn();
-              possibleStates.add(addState);
-            }
-          } else { // Karte wird auf exp gelegt
-            if(addCardPossible(expeditions[playerAtTurn][color],hand[i],color)) {
-              if (j == 0) {
-                addState = new Session(this);
-                addState.putOnExpedition(i, playerAtTurn);
-                addState.drawFromStack(i,playerAtTurn);
-              } else {
-                addState = new Session(this);
-                addState.putOnExpedition(i, playerAtTurn);
-                addState.drawFromDiscardPile(possibleDraws[j], i, playerAtTurn);
-              }
-              if(addState!=null) {
-                addState.switchTurn();
-                possibleStates.add(addState);
-              }
-            }
-          }
-        }
-      }
-    }
-    return possibleStates;
-  }
-
-  public int compareTo(Session other){
-    for(int i = 0;i<8;i++){
-      if(playercards[0][i].equals(other.playercards[0][i])) return -1;
-    }
-    return 1;
   }
 
   public int[] getPossibleDrawsInt(){
@@ -585,13 +572,5 @@ public class Session {
 
   public void setTurnCounter(int turnCounter) {
     this.turnCounter = turnCounter;
-  }
-
-  public Stack<Card>[] getDiscardPile() {
-    return discardPile;
-  }
-
-  public Stack<Card>[][] getExpeditions() {
-    return expeditions;
   }
 }

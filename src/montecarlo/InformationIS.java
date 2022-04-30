@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
 
+/**
+ * @author Jann Winter
+ * This class represents an information set. It holds all information a player can observe during a game.
+ */
+
 public class InformationIS {
 
   ArrayList<Card> observedCards;
@@ -18,6 +23,17 @@ public class InformationIS {
   int turnCounter;
   ArrayList<Card> oppCardsObserved;//@TODO
 
+  /**
+   * This constructor is called to create an instance with all attributes
+   * @param hand is the player's cards
+   * @param myExp is the player's expeditions
+   * @param oppExp is the opponent's expeditions
+   * @param discardPile is the discard pile
+   * @param turn is the boolean indicating who's turn it is
+   * @param imP1 is a boolean telling if current player is Nr1 or Nr2
+   * @param turnCounter is the counter of turns
+   * @param oppCards holds cards known to be on opponent's hand
+   */
   public InformationIS(Card[] hand,Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile,
       boolean turn,boolean imP1,int turnCounter,ArrayList<Card> oppCards){
     myHand = clone(hand);
@@ -35,12 +51,13 @@ public class InformationIS {
     oppCardsObserved = oppCards;
   }
 
+  /**
+   * This method uses the information to create a conform determinization.
+   * @return a valid session
+   */
   public Session createDeterminization(){
     Session determinization;
     ArrayList<Card> observedCards = this.observedCards;
-    //for(int i = 0;i<oppCardsObserved.size();i++){//Set of Cards player has seen
-    //  if(!observedCards.contains(oppCardsObserved.get(i))) observedCards.add(oppCardsObserved.get(i));
-    //}
     observedCards.addAll(oppCardsObserved);
     ArrayList<Card> remainingCardsHS = createCardDeck(); //Set of game cards used to play -> as HashSet to increase speed of removeAll
     remainingCardsHS.removeAll(observedCards);
@@ -71,10 +88,10 @@ public class InformationIS {
     return determinization;
   }
 
-  public void setOppCardsObserved(ArrayList<Card> oppCardsObserved) {
-    this.oppCardsObserved = oppCardsObserved;
-  }
-
+  /**
+   * This method creates the 60 game cards
+   * @return
+   */
   public static ArrayList<Card> createCardDeck(){
     ArrayList<Card> wholeSetOfCards = new ArrayList<>();
     for(int i = 0;i<3;i++){
@@ -103,6 +120,11 @@ public class InformationIS {
     return clone;
   }
 
+  /**
+   * This method is used to deep copy an array of stacks holding cards
+   * @param stacks array to copy
+   * @return deep copied array
+   */
   public Stack<Card>[] clone(Stack<Card>[] stacks){
     int size = stacks.length;
     Stack<Card>[] clone = new Stack[]{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()};
@@ -114,6 +136,7 @@ public class InformationIS {
     return clone;
   }
 
+  /** Get methods **/
   public boolean isTurn() {
     return turn;
   }

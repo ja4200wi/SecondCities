@@ -19,6 +19,11 @@ import player.Player;
 import player.RandomPlayer;
 import player.RuleBasedPlayer;
 
+/**
+ * @author Jann Winter
+ * This class is the controller of the starting screen of the GUI application.
+ */
+
 public class Controller {
 
   Session game;
@@ -61,6 +66,10 @@ public class Controller {
     AIselection1.setItems(ais);
     AIselection2.setItems(ais);
   }
+
+  /**
+   * The following methods are called from the GUI to select the players.
+   */
 
   @FXML
   void chooseAI1(){
@@ -114,7 +123,11 @@ public class Controller {
     }
   }
 
-
+  /**
+   * This method opens a new window and starts the game with the given settings.
+   * @param actionEvent
+   * @throws IOException
+   */
   public void startGame(javafx.event.ActionEvent actionEvent) throws IOException {
     boolean p1isAI = player1Human.isDisabled();
     boolean p2isAI = player2Human.isDisabled();
@@ -137,6 +150,13 @@ public class Controller {
     game.playGameWithGUI();
   }
 
+  /**
+   * This method creates the player instance to start the game with.
+   * @param isAI tells if the player is AI
+   * @param name can be used to set player's name
+   * @param p tells whether this player is Nr1 or Nr2
+   * @return
+   */
   Player createPlayer(boolean isAI,String name,int p) {
     boolean isP1 = (p==1)? true:false;
     if(isAI) {

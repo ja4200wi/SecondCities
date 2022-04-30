@@ -8,6 +8,11 @@ import montecarlo.MonteCarloIS;
 import java.util.ArrayList;
 import java.util.Stack;
 
+/**
+ * @author Jann Winter
+ * This class represents a MCTS player, which has a memory to identify opponent's cards.
+ */
+
 public class ISPlayer extends MemoryPlayer{
 
   private int time; //time given to construct mcts tree
@@ -40,6 +45,11 @@ public class ISPlayer extends MemoryPlayer{
     return m;
   }
 
+  /**
+   * This method adds cards to opponent model if a card was drawn from discard pile (by opponent).
+   * @param discardPile
+   * @param oppExp
+   */
   public void detectOpponentsCards(Stack<Card>[] discardPile,Stack<Card>[] oppExp){
     boolean drawFromDiscardDetected = false;
     int colorOfDraw = -1;
@@ -56,6 +66,11 @@ public class ISPlayer extends MemoryPlayer{
     didOpponentRemove(discardPile,oppExp); //Update known cards
   }
 
+  /**
+   * Removes cards from opponent model if opponent placed cards onto game board.
+   * @param discardPile
+   * @param oppExp
+   */
   public void didOpponentRemove(Stack<Card>[] discardPile,Stack<Card>[] oppExp){
     int remove = -1;
     int counter = 0;
@@ -71,6 +86,10 @@ public class ISPlayer extends MemoryPlayer{
     }
   }
 
+  /**
+   * Memorize the opponent's expeditions by deep copying the prior
+   * @param oppExp
+   */
   public void memorizeOppExpPile(Stack<Card>[] oppExp) {
     oldDiscardPile = new Stack[]{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(),
         new Stack<Card>(), new Stack<Card>()};
@@ -81,6 +100,12 @@ public class ISPlayer extends MemoryPlayer{
     }
   }
 
+  /**
+   * Memorize the discard pile by deep copying the prior and including cards placed in current move
+   * @param discardPile
+   * @param move
+   * @param hand
+   */
   public void memorizeDiscardPile(Stack<Card>[] discardPile,Move move,Card[] hand){
     oldDiscardPile = new Stack[]{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()};
     for(int i = 0;i<5;i++){
@@ -97,6 +122,9 @@ public class ISPlayer extends MemoryPlayer{
     }
   }
 
+  /**
+   * This method needs ti be called before a memory player is added to a game.
+   */
   public void resetMemory(){
     this.oldDiscardPile = new Stack[]{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()};
     this.cardsOfOpp = new ArrayList<>();

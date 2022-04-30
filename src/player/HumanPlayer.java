@@ -6,28 +6,16 @@ import game.Session;
 import java.util.Scanner;
 import java.util.Stack;
 
+/**
+ * @author Jann Winter
+ * This class represents a HumanPlayer participating in LostCities.
+ */
+
 public class HumanPlayer extends Player {
 
   public HumanPlayer(){
     super();
   isCheating=true;}
-
-  @Override
-  public Move makeMove(Card[] myHand,Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile,boolean turn,int turnCounter) {
-    return null;
-  }
-
-  public void printHand(Card[] myHand){
-    StringBuilder sb = new StringBuilder("My cards: ");
-    int counter = 1;
-    for(Card c: myHand){
-      sb.append("\tCard " + counter++);
-      sb.append(c);
-      sb.append(", \t");
-      if(counter==5) sb.append("\n\t\t\t\t\t");
-    }
-    System.out.println(sb);
-  }
 
   @Override
   public Move makeMove(Session session) {
@@ -57,5 +45,22 @@ public class HumanPlayer extends Player {
 
   private void printDivider(){
     System.out.println("__________________________________________________________________________");
+  }
+
+  public void printHand(Card[] myHand){
+    StringBuilder sb = new StringBuilder("My cards: ");
+    int counter = 1;
+    for(Card c: myHand){
+      sb.append("\tCard " + counter++);
+      sb.append(c);
+      sb.append(", \t");
+      if(counter==5) sb.append("\n\t\t\t\t\t");
+    }
+    System.out.println(sb);
+  }
+
+  @Override
+  public Move makeMove(Card[] myHand,Stack<Card>[] myExp,Stack<Card>[] oppExp,Stack<Card>[] discardPile,boolean turn,int turnCounter) {
+    return null;
   }
 }
