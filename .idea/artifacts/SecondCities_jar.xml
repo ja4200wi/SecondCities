@@ -6,7 +6,6 @@
         <element id="file-copy" path="$PROJECT_DIR$/out/artifacts/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="SecondCities" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/junit/junit/4.12/junit-4.12.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/coding/Bachelor/openjfx-17.0.2_windows-x64_bin-sdk/javafx-sdk-17.0.2/lib/javafx-swt.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/coding/Bachelor/openjfx-17.0.2_windows-x64_bin-sdk/javafx-sdk-17.0.2/lib/javafx.web.jar" path-in-jar="/" />
