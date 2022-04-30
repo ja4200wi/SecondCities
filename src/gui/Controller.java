@@ -14,15 +14,21 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import player.HumanPlayer;
 import player.ISPlayer;
+import player.LikeHumanPlayer;
 import player.Player;
 import player.RandomPlayer;
 import player.RuleBasedPlayer;
+
+/**
+ * @author Jann Winter
+ * This class is the controller of the starting screen of the GUI application.
+ */
 
 public class Controller {
 
   Session game;
 
-  ObservableList<String> ais = FXCollections.observableArrayList("Random","Rule-Based","ISMCTS");
+  ObservableList<String> ais = FXCollections.observableArrayList("Random","Rule-Based","Human-Like","ISMCTS-LikeHuman","ISMCTS-Rule");
 
   @FXML
   private ChoiceBox<String> AIselection1;
@@ -60,6 +66,10 @@ public class Controller {
     AIselection1.setItems(ais);
     AIselection2.setItems(ais);
   }
+
+  /**
+   * The following methods are called from the GUI to select the players.
+   */
 
   @FXML
   void chooseAI1(){
@@ -113,7 +123,11 @@ public class Controller {
     }
   }
 
-
+  /**
+   * This method opens a new window and starts the game with the given settings.
+   * @param actionEvent
+   * @throws IOException
+   */
   public void startGame(javafx.event.ActionEvent actionEvent) throws IOException {
     boolean p1isAI = player1Human.isDisabled();
     boolean p2isAI = player2Human.isDisabled();
@@ -136,6 +150,13 @@ public class Controller {
     game.playGameWithGUI();
   }
 
+  /**
+   * This method creates the player instance to start the game with.
+   * @param isAI tells if the player is AI
+   * @param name can be used to set player's name
+   * @param p tells whether this player is Nr1 or Nr2
+   * @return
+   */
   Player createPlayer(boolean isAI,String name,int p) {
     boolean isP1 = (p==1)? true:false;
     if(isAI) {
@@ -145,8 +166,12 @@ public class Controller {
           return new RandomPlayer();
         case "Rule-Based":
           return new RuleBasedPlayer();
-        case "ISMCTS":
-          return new ISPlayer(true,6000,0.7,0);
+        case "Human-Like":
+          return new LikeHumanPlayer();
+        case "ISMCTS-LikeHuman":
+          return new ISPlayer(2,8000,50,1,true);
+        case "ISMCTS-Rule":
+          return new ISPlayer(1,8000,50,1,true);
       }
     }
     else {

@@ -2,7 +2,7 @@ package game;
 
 /**
  * @author Jann Winter
- * This class is used to transfer information between player.Player and game.Session.
+ * This class is used to transfer information between Player and Session.
  */
 
 public class Move {

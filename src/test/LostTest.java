@@ -1,317 +1,217 @@
 package test;
 
-import game.Card;
-import game.Move;
 import game.Session;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Stack;
-import javafx.util.Pair;
-import montecarlo.InformationIS;
-import montecarlo.MonteCarloIS;
-import montecarlo.NodeIS;
 import org.junit.Test;
-import player.CheatingMCTSPlayer;
-import player.DeterminatorPlayer;
 import player.ISPlayer;
+import player.LikeHumanPlayer;
 import player.Player;
 import player.RandomPlayer;
 import player.RuleBasedPlayer;
-import player.RuleBasedPlayerALT;
+import player.TrulyRandomPlayer;
 
 public class LostTest {
 
   @Test
-  public void testAPI(){
-    RandomPlayer random;
-    RandomPlayer random2;
-    //Session game = new Session(random,random2);
+  public void testBasicAgents(){
+    TrulyRandomPlayer trulyRandom = new TrulyRandomPlayer();
+    RandomPlayer quickRandom = new RandomPlayer();
+    RuleBasedPlayer quickRule = new RuleBasedPlayer();
+    RuleBasedPlayer quickRule2 = new RuleBasedPlayer(); // if two QuickRule compete
+    LikeHumanPlayer likeHuman = new LikeHumanPlayer();
+    LikeHumanPlayer likeHuman2 = new LikeHumanPlayer(); //if two likeHumans compete
+    Experiment trulyVStruly = new Experiment(trulyRandom,trulyRandom,100000);
+    Experiment quickRandomVSquickRandom = new Experiment(quickRandom,quickRandom,100000);
+    Experiment quickRuleVSquickRule = new Experiment(quickRule,quickRule2,100000);
+    Experiment likeHumanVSlikeHuman = new Experiment(likeHuman,likeHuman2,100000);
+    /**
+     * The average number of turns and statistics are different to the results in the thesis
+     * due to the fact that the gamOver flag was changed for this experiment to allow
+     * games taking longer than 100 turns.
+     */
+    trulyVStruly.doExperiment(false);
+    quickRandomVSquickRandom.doExperiment(false);
+    quickRuleVSquickRule.doExperiment(false);
+    likeHumanVSlikeHuman.doExperiment(false);
   }
 
   @Test
-  public void testRandomSpeed(){
-    RandomPlayer random = new RandomPlayer();
-    RandomPlayer random2 = new RandomPlayer();
-    RuleBasedPlayer rule = new RuleBasedPlayer();
-    RuleBasedPlayer rule2 = new RuleBasedPlayer();
-    Session game;
-    for(int i = 0;i<100000;i++){
-      game = new Session(rule,rule2);
-      game.playGame();
+  public void tournamentBasicAgents(){
+    TrulyRandomPlayer trulyRandom = new TrulyRandomPlayer();
+    RandomPlayer quickRandom = new RandomPlayer();
+    RuleBasedPlayer quickRule = new RuleBasedPlayer();
+    RuleBasedPlayer quickRule2 = new RuleBasedPlayer(); // if two QuickRule compete
+    LikeHumanPlayer likeHuman = new LikeHumanPlayer();
+    LikeHumanPlayer likeHuman2 = new LikeHumanPlayer(); //if two likeHumans compete
+    Experiment trulyVStruly = new Experiment(trulyRandom,trulyRandom,100000,"TrulyRandom vs TrulyRandom");
+    Experiment trulyVSquickRandom = new Experiment(trulyRandom,quickRandom,100000,"Truly Random vs QuickRandom");
+    Experiment trulyVSquickRule = new Experiment(trulyRandom,quickRule,100000,"TrulyRandom vs QuickRule");
+    Experiment trulyVSlikeHuman = new Experiment(trulyRandom,likeHuman,100000,"TrulyRandom vs LikeHuman");
+    Experiment quickRandomVSquickRandom = new Experiment(quickRandom,quickRandom,100000,"QuickRandom vs QuickRandom");
+    Experiment quickRandomVSquickRule = new Experiment(quickRandom,quickRule,100000,"QuickRandom vs QuickRule");
+    Experiment quickRandomVSlikeHuman = new Experiment(quickRandom,likeHuman,100000,"QuickRandom vs LikeHuman");
+    Experiment quickRuleVSquickRule = new Experiment(quickRule,quickRule2,100000,"QuickRule vs QuickRule");
+    Experiment quickRuleVSlikeHuman = new Experiment(quickRule,likeHuman,100000,"QuickRule vs LikeHuman");
+    Experiment likeHumanVSlikeHuman = new Experiment(likeHuman,likeHuman2,100000,"LikeHuman vs LikeHuman");
+    Experiment[] experiments = new Experiment[]{trulyVStruly,trulyVSquickRandom,trulyVSquickRule,
+        trulyVSlikeHuman,quickRandomVSquickRandom,quickRandomVSquickRule,quickRandomVSlikeHuman,
+    quickRuleVSquickRule,quickRuleVSlikeHuman,likeHumanVSlikeHuman};
+    for(int i = 0;i<experiments.length;i++){
+      experiments[i].doExperiment(false);
     }
   }
 
   @Test
-  public void testMethods(){
-    Stack<Card> stack = createTestCards(); //Card deck
-    Card[] myHand = new Card[8];
-    for(int i = 0;i<8;i++) myHand[i] = stack.pop(); //Fill my Hand
-    Stack<Card> example = new Stack<>();
-    example.add(new Card(0,5));
-    Stack<Card>[] myExp = new Stack[]{example, new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()};
-    Stack<Card>[] oppExp = new Stack[]{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()};
-    Stack<Card>[] discard = new Stack[]{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()};
-    ArrayList<Card> oppCardsIKnow = new ArrayList<>();
-    oppCardsIKnow.add(new Card(0,8));
-    //Above create empty game board representations
-    InformationIS information = new InformationIS(myHand,myExp,oppExp,discard,true,true,0,oppCardsIKnow);
-    Session det = information.createDeterminization();
-    //@TODO: Assert.assertEquals(43,det.getCardsLeft());
-    NodeIS nodeWithOneChild = new NodeIS();
-    nodeWithOneChild.addChild(new Move(0,true,0));
-    ArrayList<Move> moves = MonteCarloIS.movesFromDetNotInNodeChildren(nodeWithOneChild,det);
-    //@TODO: Assert.assertEquals(15,moves.size()); here again determine exactly Cards
-    MonteCarloIS mcIS = new MonteCarloIS();
-    Pair<NodeIS,Session> pair;
-    pair = mcIS.select(new NodeIS(),det,Math.sqrt(2));
-    System.out.println("DEBUG"); //@TODO: Assert
-    pair = mcIS.expand(nodeWithOneChild,det);
-    System.out.println("DEBUG"); //@TODO: Assert
-    ISPlayer smart = new ISPlayer(true,1000,0.7,0);
-    RandomPlayer random = new RandomPlayer();
-    Session game = new Session(smart,random);
-    game.getDiscardPile()[0].add(new Card(0,10));
-    game.getDiscardPile()[1].add(new Card(1,10));
-    game.getDiscardPile()[2].add(new Card(2,10));
-    game.getDiscardPile()[3].add(new Card(3,10));
-    game.getDiscardPile()[4].add(new Card(4,10));
-    ArrayList<Move> movesAll = MonteCarloIS.getPossibleMoves(game);
-    System.out.println(movesAll.size());
+  public void findExplorationConstant(){
+    RuleBasedPlayer quickRule = new RuleBasedPlayer();
+    ISPlayer awl0_3 = new ISPlayer(0,250,0.3,0,true);
+    ISPlayer awl0_5 = new ISPlayer(0,250,0.5,0,true);
+    ISPlayer awl0_7 = new ISPlayer(0,250,0.7,0,true);
+    ISPlayer awl1_4 = new ISPlayer(0,250,1.4,0,true);
+    ISPlayer rwl0_5 = new ISPlayer(0,250,0.5,2,true);
+    ISPlayer rwl1_0 = new ISPlayer(0,250,1.0,2,true);
+    ISPlayer rwl2_0 = new ISPlayer(0,250,2.0,2,true);
+    ISPlayer rwl3_0 = new ISPlayer(0,250,3.0,2,true);
+    ISPlayer sd_25 = new ISPlayer(0,250,25 ,1 ,true);
+    ISPlayer sd_50 = new ISPlayer(0,250,50 ,1 ,true);
+    ISPlayer sd_75 = new ISPlayer(0,250,75 ,1 ,true);
+    ISPlayer sd100 = new ISPlayer(0,250,100,1 ,true);
+    Experiment awl1 = new Experiment(awl0_3,quickRule,1000,"AWL with 0.3");
+    Experiment awl2 = new Experiment(awl0_5,quickRule,1000,"AWL with 0.5");
+    Experiment awl3 = new Experiment(awl0_7,quickRule,1000,"AWL with 0.7");
+    Experiment awl4 = new Experiment(awl1_4,quickRule,1000,"AWL with 1.4");
+    Experiment rwl1 = new Experiment(rwl0_5,quickRule,1000,"RWL with 0.5");
+    Experiment rwl2 = new Experiment(rwl1_0,quickRule,1000,"RWL with 1.0");
+    Experiment rwl3 = new Experiment(rwl2_0,quickRule,1000,"RWL with 2.0");
+    Experiment rwl4 = new Experiment(rwl3_0,quickRule,1000,"RWL with 3.0");
+    Experiment sd_1 = new Experiment(sd_25 ,quickRule,1000,"SD with 25");
+    Experiment sd_2 = new Experiment(sd_50 ,quickRule,1000,"SD with 50");
+    Experiment sd_3 = new Experiment(sd_75 ,quickRule,1000,"SD with 75");
+    Experiment sd_4 = new Experiment(sd100 ,quickRule,1000,"SD with 100");
+    Experiment[] experiments = new Experiment[]{awl1,awl2,awl3,awl4,rwl1,rwl2,rwl3,rwl4,sd_1,sd_2,sd_3,sd_4};
+    for(int i = 0;i< experiments.length;i++){
+      experiments[i].doExperiment(false);
+    }
   }
 
   @Test
-  public void testConstExploration(){
-    RuleBasedPlayer rule = new RuleBasedPlayer();
-    ISPlayer dumb = new ISPlayer(false,1000,0.4,0);
-    ISPlayer dumb2 = new ISPlayer(false,1000,0.6,0);
-    ISPlayer dumb3 = new ISPlayer(false,1000,0.7,0);
-    ISPlayer dumb4 = new ISPlayer(false,1000,0.8,0);
-    ISPlayer dumb5 = new ISPlayer(false,1000,1,0);
-    ISPlayer dumb6 = new ISPlayer(false,1000,1.2,0);
-    ISPlayer dumb7 = new ISPlayer(false,1000,1.4,0);
-    int winsDumb = 0;
-    int winsDumb2 = 0;
-    int winsDumb3 = 0;
-    int winsDumb4 = 0;
-    int winsDumb5 = 0;
-    int winsDumb6 = 0;
-    int winsDumb7 = 0;
-    for(int i = 0;i<100;i++){
-      Session game= new Session(dumb,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb2,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb2++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb3,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb3++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb4,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb4++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb5,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb5++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb6,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb6++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb7,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb7++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    System.out.println("Wins Player Const Exploration 0.4: " + winsDumb + "\nWins Player Const Exploration 0.6: " + winsDumb2
-    + "\nWins Player Const Exploration 0.7: " + winsDumb3 + "\nWins Player Const Exploration 0.8: " + winsDumb4 +
-        "\nWins Player Const Exploration 1: " + winsDumb5 +"\nWins Player Const Exploration 1.2: " + winsDumb6 +
-        "\nWins Player Const Exploration 1.4: " + winsDumb7);
+  public void findPlayoutStyle(){
+    RuleBasedPlayer quickRule = new RuleBasedPlayer();
+    ISPlayer ps_quickRandom = new ISPlayer(0,250,50,1,true);
+    ISPlayer ps_quickRule = new ISPlayer(1,250,50,1,true);
+    ISPlayer ps_likeHuman = new ISPlayer(2,250,50,1,true);
+    ISPlayer ps_quickRule1sec = new ISPlayer(1,1000,50,1,true);
+    ISPlayer ps_likeHuman1sec = new ISPlayer(2,1000,50,1,true);
+    Experiment ps1 = new Experiment(ps_quickRandom,quickRule,1000,"Playout Style QuickRandom");
+    Experiment ps2 = new Experiment(ps_quickRule,  quickRule,1000,"Playout Style QuickRule");
+    Experiment ps3 = new Experiment(ps_likeHuman,  quickRule,1000,"Playout Style LikeHuman");
+    Experiment psQuickRuleVSpsLikeHuman = new Experiment(ps_quickRule1sec,ps_likeHuman1sec,1000,"Playout QuickRule versus Playout LikeHuman");
+    ps1.doExperiment(false);
+    ps2.doExperiment(false);
+    ps3.doExperiment(false);
+    psQuickRuleVSpsLikeHuman.doExperiment(false);
   }
 
-  @Test
-  public void testLightHeavy(){
-    ISPlayer light = new ISPlayer(false,100,0.7,0);
-    ISPlayer heavy = new ISPlayer(true,100,0.7,0);
-    Session game;
-    int winsLight = 0;
-    int winsHeavy = 0;
-    int turns = 0;
-    int onExps = 0;
-    for(int i = 0;i<1;i++){
-      game = new Session(light,heavy);
-      int[] gameEndInfo = game.playGame();
-      if(gameEndInfo[0]>gameEndInfo[1]) {
-        winsLight++;
-      } else {
-        winsHeavy++;
-      }
-      turns += gameEndInfo[2];
-      onExps += gameEndInfo[3];
-      String nameWinner = (gameEndInfo[0]>gameEndInfo[1])?"Light":"Heavy";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<0;i++){
-      game = new Session(heavy,light);
-      int[] gameEndInfo = game.playGame();
-      if(gameEndInfo[0]>gameEndInfo[1]) {
-        winsHeavy++;
-      } else {
-        winsLight++;
-      }
-      turns += gameEndInfo[2];
-      onExps += gameEndInfo[3];
-      String nameWinner = (gameEndInfo[0]>gameEndInfo[1])?"Heavy":"Light";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    System.out.println("Wins Light: "+ winsLight + "\tWins Heavy: " + winsHeavy + "\tTurns: " +
-        turns + "\tTimes played on expedition: " + onExps);
-  }
 
-  @Test
-  public void testDetPlayer(){
-    DeterminatorPlayer determinator = new DeterminatorPlayer(false,15,400);
-    ISPlayer dumb = new ISPlayer(false,6000,0.7,0);
-    Session game = new Session(determinator,dumb);
-    int[] scores = game.playGame();
-    System.out.println("Scores ->\tDeterminization: " + scores[0] + "\t:\t" + scores[1] + ":ISMCTS") ;
-  }
-
-  @Test
-  public void testIterations(){
-    ISPlayer light07Reward0 = new ISPlayer(false,1000,0.7,0);
-    //ISPlayer light07Reward0 = new ISPlayer(false,8000,0.7,0);
-    RuleBasedPlayer rule = new RuleBasedPlayer();
-    Session game = new Session(light07Reward0,rule);
-    game.playGame();
-    System.out.println(game);
-  }
-
-  @Test
-  public void testRewardStrategy(){
-    ISPlayer strategy0 = new ISPlayer(false,1000,0.7,0);
-    ISPlayer strategy2 = new ISPlayer(false,1000,0.7,2);
-    Session game;
-    int winsStrat0 = 0;
-    int winsStrat1 = 0;
-    for(int i = 0;i<25;i++){
-      game = new Session(strategy0,strategy2);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) { winsStrat0++; }
-      else {winsStrat1++;}
-      String nameWinner = (scores[0]>scores[1])?"Strategy 0":"Strategy 1";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<25;i++){
-      game = new Session(strategy2,strategy0);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) { winsStrat1++; }
-      else {winsStrat0++;}
-      String nameWinner = (scores[0]>scores[1])?"Strategy 1":"Strategy 0";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    System.out.println("Wins Strat0: " + winsStrat0 + "Wins Strat1: " + winsStrat1);
-  }
-
-  @Test
-  public void experiment(){
-    ISPlayer light8sec07reward0 = new ISPlayer(false,100,0.7,0);
-    ISPlayer heavy8sec07reward0 = new ISPlayer(true,8000,0.7,0);
-    ISPlayer light8sec14reward2 = new ISPlayer(false,500,1.4,2);
-    RuleBasedPlayer ruleOld = new RuleBasedPlayer();
-    RuleBasedPlayerALT ruleNew = new RuleBasedPlayerALT();
-    RuleBasedPlayer rule = new RuleBasedPlayer();
-    Experiment experiment = new Experiment(light8sec07reward0,rule,4);
-    Experiment experiment2 = new Experiment(light8sec14reward2,rule,2);
-    Experiment experiment3 = new Experiment(ruleNew,ruleOld,50000);
-    experiment.doExperiment();
-    experiment2.doExperiment();
-    experiment3.doExperiment();
-  }
-
-  @Test
-  public void testBasics(){
-    Card card1 = new Card(0,0);
-    Card card2 = new Card(0,1);
-  }
-
-  Stack<Card> createTestCards(){
-    ArrayList<Card> cards = InformationIS.createCardDeck();
-    Collections.shuffle(cards);
-    Stack<Card> cardStack = new Stack<>();
-    cardStack.addAll(cards);
-    return cardStack;
-  }
-
-  public class Experiment{
+  /**
+   * This class is used to perform experiments.
+   */
+  public static class Experiment {
 
     int numberOfSimulations;
     Player p1;
     Player p2;
+    String name = "";
 
-    public Experiment(Player p1, Player p2,int numberOfSimulations){
+    public Experiment(Player p1, Player p2, int numberOfSimulations) {
       this.numberOfSimulations = numberOfSimulations;
       this.p1 = p1;
       this.p2 = p2;
     }
 
-    public int[] doExperiment(){
+    public Experiment(Player p1, Player p2, int numberOfSimulations,String name) {
+      this.numberOfSimulations = numberOfSimulations;
+      this.p1 = p1;
+      this.p2 = p2;
+      this.name = name;
+    }
+
+
+
+    public double[] doExperiment(boolean print) {
+      System.out.println("EXPERIMENT " + this.name);
+      long start = System.currentTimeMillis();
       Session game;
       int winsP1 = 0;
       int winsP2 = 0;
       int cumulativeScoreP1 = 0;
       int cumulativeScoreP2 = 0;
-      int averageNumberOfTurns = 0;
-      int averageNumberOfExpTurns = 0;
-      for(int i = 0;i<numberOfSimulations/2;i++){
-        game = new Session(p1,p2);
-        int[] results = game.playGame();
+      double averageNumberOfTurns = 0;
+      double averageNumberOfExpTurns = 0;
+      double averageDrawsFromDiscard = 0;
+      double averageExpsP1 = 0;
+      double averageExpsP2 = 0;
+      for (int i = 0; i < numberOfSimulations / 2; i++) {
+        game = new Session(p1, p2);
+        int[] results;
+        if (print) {
+          results = game.playGameWithPrints();
+        } else {
+          results = game.playGame();
+        }
         cumulativeScoreP1 += results[0];
         cumulativeScoreP2 += results[1];
         averageNumberOfTurns += results[2];
         averageNumberOfExpTurns += results[3];
-        if(results[0]>results[1]) winsP1++;
-        if(results[1]>results[0]) winsP2++;
+        averageDrawsFromDiscard += results[4];
+        averageExpsP1 += results[5];
+        averageExpsP2 += results[6];
+        if (results[0] > results[1]) {
+          winsP1++;
+        }
+        if (results[1] > results[0]) {
+          winsP2++;
+        }
+        //System.out.println("\nWins P1: " + winsP1 + "\tWins P2: " + winsP2);
       }
-      for(int i = 0;i<numberOfSimulations/2;i++){
-        game = new Session(p2,p1);
-        int[] results = game.playGame();
+      for (int i = 0; i < numberOfSimulations / 2; i++) {
+        game = new Session(p2, p1);
+        int[] results;
+        if (print) {
+          results = game.playGameWithPrints();
+        } else {
+          results = game.playGame();
+        }
         cumulativeScoreP1 += results[1];
         cumulativeScoreP2 += results[0];
         averageNumberOfTurns += results[2];
         averageNumberOfExpTurns += results[3];
-        if(results[0]>results[1]) winsP2++;
-        if(results[1]>results[0]) winsP1++;
+        averageDrawsFromDiscard += results[4];
+        averageExpsP1 += results[6];
+        averageExpsP2 += results[5];
+        if (results[0] > results[1]) {
+          winsP2++;
+        }
+        if (results[1] > results[0]) {
+          winsP1++;
+        }
+        //System.out.println("\nWins P1 " + winsP1 + "\tWins P2 " + winsP2);
       }
+      System.out.println("Time needed --> " + (System.currentTimeMillis()-start));
       averageNumberOfExpTurns /= numberOfSimulations;
       averageNumberOfTurns /= numberOfSimulations;
+      averageDrawsFromDiscard /= numberOfSimulations;
+      averageExpsP1 /= numberOfSimulations;
+      averageExpsP2 /= numberOfSimulations;
       System.out.println("Wins Player 1: " + winsP1 + "\tWins Player 2: " + winsP2 +
-          "\nCumulative Score Player 1: " + cumulativeScoreP1 + "\tCumulative Score Player 2: " + cumulativeScoreP2 +
-          "\nAverage Number of Turns: " + averageNumberOfTurns + "\tAverage Number of Expedition Plays: " +averageNumberOfExpTurns);
-      return new int[]{winsP1,winsP2,cumulativeScoreP1,cumulativeScoreP2,averageNumberOfTurns,averageNumberOfExpTurns};
+          "\nCumulative Score Player 1: " + cumulativeScoreP1 + "\tCumulative Score Player 2: "
+          + cumulativeScoreP2 +
+          "\nAverage Number of Turns: " + averageNumberOfTurns
+          + "\t\t\tAverage Number of Expedition Plays: " + averageNumberOfExpTurns +
+          "\nAverage Number of Expeditions started Player 1 " + averageExpsP1
+          + "\t\t\tAverage Number of Expeditions started Player 2 " + averageExpsP2 +
+          "\nAverage Number of Draws from Discard " + averageDrawsFromDiscard);
+      return new double[]{winsP1, winsP2, cumulativeScoreP1, cumulativeScoreP2,
+          averageNumberOfTurns, averageNumberOfExpTurns};
     }
   }
-
 }

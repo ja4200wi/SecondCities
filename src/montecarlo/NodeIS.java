@@ -4,8 +4,12 @@ import game.Card;
 import game.Move;
 import game.Session;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
+
+/**
+ * @author Jann Winter
+ * This class represents a node in the MCTS  tree
+ */
 
 public class NodeIS {
 
@@ -28,6 +32,11 @@ public class NodeIS {
     incomingAction = null;
   }
 
+  /**
+   * Create a list of possible children accessible from a determinization
+   * @param determinization
+   * @return
+   */
   public ArrayList<NodeIS> getChildrenConformWith(Session determinization){
     ArrayList<NodeIS> conform = new ArrayList<>();
     ArrayList<Move> availableMoves = getPossibleMoves(determinization);
@@ -39,6 +48,10 @@ public class NodeIS {
     return conform;
   }
 
+  /**
+   * This constructor creates a node with an incomingAction
+   * @param move
+   */
   public NodeIS(Move move){
     children = new ArrayList<NodeIS>();
     parent = null;
@@ -48,11 +61,20 @@ public class NodeIS {
     incomingAction = move;
   }
 
+  /**
+   * This method returns all nodes accessible from the parent node
+   * @return
+   */
   public ArrayList<NodeIS> getSiblings(){
     if(parent==null) return null;
     return this.parent.children;
   }
 
+  /**
+   * This method appends a child to the current node and sets the incoming action
+   * @param move
+   * @return
+   */
   public NodeIS addChild(Move move){
     NodeIS child = new NodeIS(move);
     this.children.add(child);
@@ -84,6 +106,11 @@ public class NodeIS {
     return incomingAction;
   }
 
+  /**
+   * Get all possible moves of player in session
+   * @param game
+   * @return the list of moves possible
+   */
   public ArrayList<Move> getPossibleMoves(Session game){
     ArrayList<Move> moves = new ArrayList<>();
     //Determine where draws are possible
@@ -108,6 +135,10 @@ public class NodeIS {
     return moves;
   }
 
+  /**
+   * Get the list of moves containing all children's incoming moves
+   * @return
+   */
   public ArrayList<Move> getMovesFromChildren(){
     ArrayList<Move> moves = new ArrayList<>();
     for(NodeIS node : children){
@@ -116,6 +147,10 @@ public class NodeIS {
     return moves;
   }
 
+  /**
+   * Method determines the best child of current node, which is the most visited one
+   * @return the best child
+   */
   public NodeIS getBestChild() {
     int maxVisits = -1;
     NodeIS bestChild = children.get(0);
