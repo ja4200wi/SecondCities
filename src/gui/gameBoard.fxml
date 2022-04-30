@@ -18,25 +18,25 @@
          <children>
             <VBox alignment="CENTER" layoutX="232.0" layoutY="10.0" prefHeight="200.0" prefWidth="125.0">
                <children>
-                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #f1c40f;" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: #f1c40f;" vbarPolicy="NEVER">
                      <content>
-                        <VBox fx:id="expYellow2" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #f1c40f;" />
+                        <VBox fx:id="expYellow2" minHeight="125.0" prefWidth="125.0" style="-fx-background-color: #f1c40f;" />
                      </content>
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </ScrollPane>
-                  <Button fx:id="discardYellowButton1" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: #f1c40f; -fx-background-radius: 10;">
+                  <Button fx:id="discardYellowButton1" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="150.0" prefWidth="100.0" style="-fx-background-color: #f1c40f; -fx-background-radius: 10;">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
                   </Button>
-                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #f1c40f;" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: #f1c40f;" vbarPolicy="NEVER">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
                      <content>
-                        <VBox fx:id="expYellow1" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #f1c40f;" />
+                        <VBox fx:id="expYellow1" minHeight="125.0" prefWidth="125.0" style="-fx-background-color: #f1c40f;" />
                      </content>
                   </ScrollPane>
                </children>
@@ -46,15 +46,15 @@
             </VBox>
             <VBox alignment="CENTER" layoutX="368.0" layoutY="10.0" prefHeight="200.0" prefWidth="125.0">
                <children>
-                  <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="295.0" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #f1c4 #2980b90f;" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="295.0" pannable="true" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: #f1c4 #2980b90f;" vbarPolicy="NEVER">
                      <content>
-                        <VBox fx:id="expBlue2" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #2980b9;" />
+                        <VBox fx:id="expBlue2" minHeight="125.0" prefWidth="125.0" style="-fx-background-color: #2980b9;" />
                      </content>
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </ScrollPane>
-                  <Button fx:id="discardBlueButton2" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: #2980b9; -fx-background-radius: 10;">
+                  <Button fx:id="discardBlueButton2" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="150.0" prefWidth="100.0" style="-fx-background-color: #2980b9; -fx-background-radius: 10;">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
@@ -62,9 +62,9 @@
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #2980b9;" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: #2980b9;" vbarPolicy="NEVER">
                      <content>
-                        <VBox fx:id="expBlue1" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #2980b9;" />
+                        <VBox fx:id="expBlue1" minHeight="125.0" prefWidth="125.0" style="-fx-background-color: #2980b9;" />
                      </content>
                      <VBox.margin>
                         <Insets top="10.0" />
@@ -77,15 +77,15 @@
             </VBox>
             <VBox alignment="CENTER" layoutX="503.0" layoutY="10.0" prefHeight="200.0" prefWidth="125.0">
                <children>
-                  <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="295.0" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #666666;" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="295.0" pannable="true" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: #666666;" vbarPolicy="NEVER">
                      <content>
-                        <VBox fx:id="expWhite2" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #ffffff;" />
+                        <VBox fx:id="expWhite2" minHeight="125.0" prefWidth="125.0" style="-fx-background-color: #ffffff;" />
                      </content>
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </ScrollPane>
-                  <Button fx:id="discardWhiteButton3" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                  <Button fx:id="discardWhiteButton3" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="150.0" prefWidth="100.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
@@ -93,9 +93,9 @@
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #666666;" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: #666666;" vbarPolicy="NEVER">
                      <content>
-                        <VBox fx:id="expWhite1" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #ffffff;" />
+                        <VBox fx:id="expWhite1" minHeight="125.0" prefWidth="125.0" style="-fx-background-color: #ffffff;" />
                      </content>
                      <VBox.margin>
                         <Insets top="10.0" />
@@ -108,15 +108,15 @@
             </VBox>
             <VBox alignment="CENTER" layoutX="639.0" layoutY="10.0" prefHeight="200.0" prefWidth="125.0">
                <children>
-                  <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="295.0" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #27ae60;" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="295.0" pannable="true" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: #27ae60;" vbarPolicy="NEVER">
                      <content>
-                        <VBox fx:id="expGreen2" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #27ae60;" />
+                        <VBox fx:id="expGreen2" minHeight="125.0" prefWidth="125.0" style="-fx-background-color: #27ae60;" />
                      </content>
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </ScrollPane>
-                  <Button fx:id="discardGreenButton4" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: #27ae60; -fx-background-radius: 10;">
+                  <Button fx:id="discardGreenButton4" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="150.0" prefWidth="100.0" style="-fx-background-color: #27ae60; -fx-background-radius: 10;">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
@@ -124,9 +124,9 @@
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #27ae60;" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: #27ae60;" vbarPolicy="NEVER">
                      <content>
-                        <VBox fx:id="expGreen1" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #27ae60;" />
+                        <VBox fx:id="expGreen1" minHeight="125.0" prefWidth="125.0" style="-fx-background-color: #27ae60;" />
                      </content>
                      <VBox.margin>
                         <Insets top="10.0" />
@@ -139,15 +139,15 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="125.0">
                <children>
-                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #c0392b;" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: #c0392b;" vbarPolicy="NEVER">
                      <content>
-                        <VBox fx:id="expRed2" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #c0392b;" />
+                        <VBox fx:id="expRed2" minHeight="125.0" prefWidth="125.0" style="-fx-background-color: #c0392b;" />
                      </content>
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </ScrollPane>
-                  <Button fx:id="discardRedButton5" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="200.0" prefWidth="125.0" style="-fx-background-color: #c0392b; -fx-background-radius: 10;">
+                  <Button fx:id="discardRedButton5" mnemonicParsing="false" onAction="#putOnDiscardPile" prefHeight="150.0" prefWidth="100.0" style="-fx-background-color: #c0392b; -fx-background-radius: 10;">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
@@ -155,9 +155,9 @@
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #c0392b;" vbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: #c0392b;" vbarPolicy="NEVER">
                      <content>
-                        <VBox fx:id="expRed1" minHeight="100.0" prefWidth="125.0" style="-fx-background-color: #c0392b;" />
+                        <VBox fx:id="expRed1" minHeight="125.0" prefWidth="125.0" style="-fx-background-color: #c0392b;" />
                      </content>
                      <VBox.margin>
                         <Insets top="10.0" />

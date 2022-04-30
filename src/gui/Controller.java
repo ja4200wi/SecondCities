@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import player.HumanPlayer;
 import player.ISPlayer;
+import player.LikeHumanPlayer;
 import player.Player;
 import player.RandomPlayer;
 import player.RuleBasedPlayer;
@@ -22,7 +23,7 @@ public class Controller {
 
   Session game;
 
-  ObservableList<String> ais = FXCollections.observableArrayList("Random","Rule-Based","ISMCTS");
+  ObservableList<String> ais = FXCollections.observableArrayList("Random","Rule-Based","Human-Like","ISMCTS-LikeHuman","ISMCTS-Rule");
 
   @FXML
   private ChoiceBox<String> AIselection1;
@@ -145,8 +146,12 @@ public class Controller {
           return new RandomPlayer();
         case "Rule-Based":
           return new RuleBasedPlayer();
-        case "ISMCTS":
-          return new ISPlayer(true,6000,0.7,0);
+        case "Human-Like":
+          return new LikeHumanPlayer();
+        case "ISMCTS-LikeHuman":
+          return new ISPlayer(2,8000,50,1,true);
+        case "ISMCTS-Rule":
+          return new ISPlayer(1,8000,50,1,true);
       }
     }
     else {

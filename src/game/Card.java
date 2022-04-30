@@ -1,29 +1,32 @@
 package game;
 
+/**
+ * @author Jann Winter
+ * This class is used to represent a Card. Cards have 5 different colors and can be either
+ * a Card with numbers from 2 to 10 or a CoinCard.
+ */
+
 public class Card implements Cloneable{
 
   boolean coinCard;
-  int color; // 0=yellow; 1=blue; 2=white, 3=green, 4=red
-  int value; // 0==coinCard
+  int color; // 0 = yellow; 1 = blue; 2 = white, 3 = green, 4 = red
+  int value; // -1,0,1 = coinCard
 
+  /**
+   * Constructor for creating a new Card.
+   * @param color  int value for the color 0=yellow,1=blue,2=white,3=green,4=red
+   * @param value Number on the Card. For CoinCards between -1 and 1
+   */
   public Card(int color,int value){
     this.color = color;
     this.value = value;
     this.coinCard = (value<2);
   }
 
-  @Override
-  public boolean equals(Object o) {
-    Card c = (Card) o;
-    if(value!=c.getValue()) {
-      return false;
-    }
-    if(color!=c.getColor()) {
-      return false;
-    }
-    return true;
-  }
-
+  /**
+   * This method is used for String representation of colors and values of the card.
+   * @return string indidcating its color and value
+   */
   public String getShort(){
     String s = "";
     if(this.getValue()>1) s += this.getColorChar() + " " + this.getValue();
@@ -31,6 +34,10 @@ public class Card implements Cloneable{
     return s;
   }
 
+  /**
+   * This method is used to simply get the value of a card as a String
+   * @return a STring holding the value of a card
+   */
   public String getShortWithoutColor(){
     String s = "";
     if(this.getValue()>1) s += + this.getValue();
@@ -38,17 +45,21 @@ public class Card implements Cloneable{
     return s;
   }
 
+  /**
+   * This method returns the start letter of the color of a card
+   * @return
+   */
   public char getColorChar(){
     switch (color) {
-      case 1:
+      case 0:
         return 'Y';
-      case 2:
+      case 1:
         return 'B';
-      case 3:
+      case 2:
         return 'W';
-      case 4:
+      case 3:
         return 'G';
-      case 5:
+      case 4:
         return 'R';
     }
     return 'X';
@@ -94,5 +105,17 @@ public class Card implements Cloneable{
     }
     if(coinCard) return  "{" + "CC" + "," + colorName + '}';
     return "{" + colorName + "," + value + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    Card c = (Card) o;
+    if(value!=c.getValue()) {
+      return false;
+    }
+    if(color!=c.getColor()) {
+      return false;
+    }
+    return true;
   }
 }

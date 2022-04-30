@@ -200,7 +200,7 @@ public class GameController {
       int colorPlaced = game.getHandAtTurn()[move.getCardIndex()].getColor();
       Button b = (Button) actionEvent.getSource();
       int colorWantToDraw = Integer.parseInt(b.getId().substring(b.getId().length()-1));
-      if(colorPlaced==colorWantToDraw && !move.isOnExp()) {
+      if(colorPlaced+1==colorWantToDraw && !move.isOnExp()) {
         Alert alarm = new Alert(AlertType.INFORMATION);
         alarm.setContentText("Can't draw card placed in same turn!");
         alarm.show();
@@ -368,6 +368,25 @@ public class GameController {
     discardButtons[4].setText(redDiscard);
 
     /** Only show cards of player at turn*/
+    if(game.isTurn()){
+      for(Button b : p2Buttons){
+        b.setDisable(true);
+        b.setVisible(false);
+      }
+      for(Button b : p1Buttons){
+        b.setDisable(false);
+        b.setVisible(true);
+      }
+    } else {
+      for(Button b : p1Buttons) {
+        b.setDisable(true);
+        b.setVisible(false);
+      }
+      for(Button b : p2Buttons) {
+        b.setDisable(false);
+        b.setVisible(true);
+      }
+    }
     /** Make sure AI's cards are never shown. Might be redundant */
     remainingCards.setText("Remaining Cards: " + game.getNumberCardsLeft());
 

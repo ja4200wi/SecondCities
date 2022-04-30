@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SecondCities.iml" filepath="$PROJECT_DIR$/SecondCities.iml" />
+      <module fileurl="file://$USER_HOME$/coding/Bachelor/openjfx-17.0.2_windows-x64_bin-sdk/javafx-sdk-17.0.2/lib/lib.iml" filepath="$USER_HOME$/coding/Bachelor/openjfx-17.0.2_windows-x64_bin-sdk/javafx-sdk-17.0.2/lib/lib.iml" />
     </modules>
   </component>
 </project>

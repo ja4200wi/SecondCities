@@ -4,19 +4,32 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
+import player.MemoryPlayer;
 import player.Player;
 import player.RandomPlayer;
 
+/**
+ * @author Jann Winter
+ * This class represents a game of Lost Cities. A game consists of two players,
+ * the cards used in the game, a boolean indicating who's turn it is,
+ * and a counter of turns made.
+ */
+
 public class Session {
 
-  private Player[] players;
-  private Card[][] playercards;
-  private Stack<Card> drawStack;
-  private Stack<Card>[] discardPile; //discardPile[0]=yellow stack etc.
-  private Stack<Card>[][] expeditions; //expedtions[1][4]=player2 red exp etc.
+  private Player[] players; // players[0] is Player Nr.1; players[1] is Player Nr.2
+  private Card[][] playercards; // 2D array holding both players' cards
+  private Stack<Card> drawStack; // stack holding all cards in the draw stack
+  private Stack<Card>[] discardPile; // array holding the discard piles, indices of array according to int values of the color
+  private Stack<Card>[][] expeditions; // 2D array holding both players' expeditions accessed with colors
   private boolean turn;
   private int turnCounter = 0;
 
+  /**
+   * This constructor
+   * @param p1
+   * @param p2
+   */
   public Session(Player p1,Player p2){
     initDrawStack();
     discardPile = new Stack[]{new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>()};
@@ -40,9 +53,9 @@ public class Session {
 
   /**
    * Constructor responsible for creation of determinizations
-   * @param playerHands
-   * @param drawStack
-   * @param discardPile
+   * @param playerHands used to initalize placers' cards
+   * @param drawStack as the remaining draw stack
+   * @param discardPile with the discarded cards
    */
   public Session(Card[][] playerHands,Stack<Card> drawStack,Stack<Card>[] discardPile,Stack<Card>[][] expeditions,boolean turn){
     players = new Player[]{new RandomPlayer(),new RandomPlayer()};
@@ -76,11 +89,46 @@ public class Session {
     turn = copy.isTurn();
   }
 
+  public int[] playGame(){
+    int countOnExp = 0;
+    int drawFromDiscardCount = 0;
+    while(!this.isOver()){
+      int atTurn = (turn)?0:1;
+      int notAtTurn = (turn)?1:0;
+      Move made;
+      if(players[atTurn].isCheating()){
+        made = players[atTurn].makeMove(this);
+      } else {
+        made = players[atTurn].makeMove(playercards[atTurn],expeditions[atTurn], expeditions[notAtTurn], discardPile,turn,turnCounter);
+      }
+      if(made.onExp) countOnExp++;
+      if(made.drawFrom>0) drawFromDiscardCount++;
+      executeMove(made);
+    }
+    int[] gameEndInformation = new int[7];
+    int[] scores = calcPoints();
+    gameEndInformation[0] = scores[0];
+    gameEndInformation[1] = scores[1];
+    gameEndInformation[2] = turnCounter;
+    gameEndInformation[3] = countOnExp;
+    gameEndInformation[4] = drawFromDiscardCount;
+    gameEndInformation[5] = countExpsStarted(true);
+    gameEndInformation[6] = countExpsStarted(false);
+    return gameEndInformation;
+  }
+
+  public int countExpsStarted(boolean p1){
+    int numberExpStarted = 0;
+    if(p1) for(int i = 0;i<5;i++) if(expeditions[0][i].size()>0) numberExpStarted++;
+    if(!p1) for(int i = 0;i<5;i++) if(expeditions[1][i].size()>0) numberExpStarted++;
+    return numberExpStarted;
+  }
+
   /**
    * Executes game and returns winner.
    * @return true if player 1 is winner
    */
-  public int[] playGame(){
+  public int[] playGameWithPrints(){
     int countOnExp = 0;
     while(!this.isOver()){
       int atTurn = (turn)?0:1;
@@ -90,6 +138,30 @@ public class Session {
         made = players[atTurn].makeMove(this);
       } else {
         made = players[atTurn].makeMove(playercards[atTurn],expeditions[atTurn], expeditions[notAtTurn], discardPile,turn,turnCounter);
+        String onto = (made.onExp)?"Expedition":"Discard Pile";
+        String drawFrom ="";
+        switch (made.getDrawFrom()){
+          case 0: drawFrom="DrawStack";
+          break;
+          case 1: drawFrom="Yellow Discard Pile";
+            break;
+          case 2: drawFrom="Blue Discard Pile";
+            break;
+          case 3: drawFrom="White Discard Pile";
+            break;
+          case 4: drawFrom="Green Discard Pile";
+            break;
+          case 5: drawFrom="Red Discard Pile";
+            break;
+        }
+        Card drawn = null;
+        if(made.getDrawFrom()!=0){
+          drawn = discardPile[made.getDrawFrom()-1].peek().clone();
+        }
+        System.out.println("\nPlay " + getHandAtTurn()[made.cardIndex] + " onto " + onto + " and draw from " + drawFrom + " " + drawn);
+        printHand(getHandAtTurn());
+        Player.printGameBoard(expeditions[0],expeditions[1],discardPile,calcPoints());
+        printDivider();
       }
       if(made.onExp) countOnExp++;
       executeMove(made);
@@ -102,6 +174,21 @@ public class Session {
     gameEndInformation[2] = turnCounter;
     gameEndInformation[3] = countOnExp;
     return gameEndInformation;
+  }
+
+  public void printHand(Card[] myHand){
+    StringBuilder sb = new StringBuilder("My cards: ");
+    int counter = 1;
+    for(Card c: myHand){
+      sb.append("\tCard " + counter++);
+      sb.append(c);
+      sb.append(", \t");
+    }
+    System.out.println(sb);
+  }
+
+  private void printDivider(){
+    System.out.println("__________________________________________________________________________");
   }
 
   public void playGameWithGUI(){
@@ -121,7 +208,7 @@ public class Session {
   }
 
   public int[] simGame(){
-    while(!this.isOver()){
+    while(!this.isOver() && turnCounter<150){
       int atTurn = (turn)?0:1;
       int notAtTurn = (turn)?1:0;
       Move made = players[atTurn].makeMove(playercards[atTurn],expeditions[atTurn],expeditions[notAtTurn],discardPile,turn,turnCounter);
@@ -230,11 +317,23 @@ public class Session {
    * @param p2 is the second player
    */
   private void initPlayers(Player p1,Player p2){
+    players = new Player[2];
     p1.setImP1(true);
     p2.setImP1(false);
-    players = new Player[2];
-    players[0] = p1;
-    players[1] = p2;
+    if(p1.hasMemory()) {
+      MemoryPlayer p1IS = (MemoryPlayer) p1;
+      p1IS.resetMemory();
+      players[0] = p1IS;
+    } else {
+      players[0] = p1;
+    }
+    if(p2.hasMemory()) {
+      MemoryPlayer p2IS = (MemoryPlayer) p2;
+      p2IS.resetMemory();
+      players[1] = p2IS;
+    } else {
+      players[1] = p2;
+    }
   }
 
   /**
@@ -324,6 +423,9 @@ public class Session {
 
   public Card[] getHandAtTurn(){ return (turn)?playercards[0]:playercards[1]; }
 
+  public Stack<Card>[] getExpAtTurn(){ return (turn)?expeditions[0]:expeditions[1]; }
+
+
   public boolean isTurn(){
     return turn;
   }
@@ -334,7 +436,7 @@ public class Session {
 
   public boolean isOver(){
     if(drawStack.isEmpty()) return true;
-    //if(turnCounter>100) return true;
+    if(turnCounter>100) return true;
     return false;
   }
 
@@ -479,10 +581,6 @@ public class Session {
       }
     }
     return false;
-  }
-
-  public Card[][] getPlayercards() {
-    return playercards;
   }
 
   public void setTurnCounter(int turnCounter) {

@@ -11,13 +11,10 @@ import montecarlo.InformationIS;
 import montecarlo.MonteCarloIS;
 import montecarlo.NodeIS;
 import org.junit.Test;
-import player.CheatingMCTSPlayer;
-import player.DeterminatorPlayer;
 import player.ISPlayer;
 import player.Player;
 import player.RandomPlayer;
 import player.RuleBasedPlayer;
-import player.RuleBasedPlayerALT;
 
 public class LostTest {
 
@@ -67,7 +64,7 @@ public class LostTest {
     System.out.println("DEBUG"); //@TODO: Assert
     pair = mcIS.expand(nodeWithOneChild,det);
     System.out.println("DEBUG"); //@TODO: Assert
-    ISPlayer smart = new ISPlayer(true,1000,0.7,0);
+    ISPlayer smart = new ISPlayer(0,1000,0.7,0,true);
     RandomPlayer random = new RandomPlayer();
     Session game = new Session(smart,random);
     game.getDiscardPile()[0].add(new Card(0,10));
@@ -80,81 +77,129 @@ public class LostTest {
   }
 
   @Test
-  public void testConstExploration(){
-    RuleBasedPlayer rule = new RuleBasedPlayer();
-    ISPlayer dumb = new ISPlayer(false,1000,0.4,0);
-    ISPlayer dumb2 = new ISPlayer(false,1000,0.6,0);
-    ISPlayer dumb3 = new ISPlayer(false,1000,0.7,0);
-    ISPlayer dumb4 = new ISPlayer(false,1000,0.8,0);
-    ISPlayer dumb5 = new ISPlayer(false,1000,1,0);
-    ISPlayer dumb6 = new ISPlayer(false,1000,1.2,0);
-    ISPlayer dumb7 = new ISPlayer(false,1000,1.4,0);
-    int winsDumb = 0;
-    int winsDumb2 = 0;
-    int winsDumb3 = 0;
-    int winsDumb4 = 0;
-    int winsDumb5 = 0;
-    int winsDumb6 = 0;
-    int winsDumb7 = 0;
-    for(int i = 0;i<100;i++){
-      Session game= new Session(dumb,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
+  public void avgChildren(){
+    String numChilds = "Reduce true 17\n"
+        + "Reduce false 40\n"
+        + "Reduce true 35\n"
+        + "Reduce false 38\n"
+        + "Reduce true 26\n"
+        + "Reduce false 40\n"
+        + "Reduce true 31\n"
+        + "Reduce false 40\n"
+        + "Reduce true 27\n"
+        + "Reduce false 34\n"
+        + "Reduce true 25\n"
+        + "Reduce false 35\n"
+        + "Reduce true 37\n"
+        + "Reduce false 34\n"
+        + "Reduce true 32\n"
+        + "Reduce false 51\n"
+        + "Reduce true 36\n"
+        + "Reduce false 44\n"
+        + "Reduce true 31\n"
+        + "Reduce false 54\n"
+        + "Reduce true 45\n"
+        + "Reduce false 56\n"
+        + "Reduce true 39\n"
+        + "Reduce false 53\n"
+        + "Reduce true 43\n"
+        + "Reduce false 65\n"
+        + "Reduce true 55\n"
+        + "Reduce false 71\n"
+        + "Reduce true 65\n"
+        + "Reduce false 75\n"
+        + "Reduce true 73\n"
+        + "Reduce false 68\n"
+        + "Reduce true 64\n"
+        + "Reduce false 62\n"
+        + "Reduce true 67\n"
+        + "Reduce false 61\n"
+        + "Reduce true 47\n"
+        + "Reduce false 54\n"
+        + "Reduce true 38\n"
+        + "Reduce false 37\n"
+        + "Reduce true 42\n"
+        + "Reduce false 45\n"
+        + "Reduce true 48\n"
+        + "Reduce false 51\n"
+        + "Reduce true 36\n"
+        + "Reduce false 41\n"
+        + "Reduce true 32\n"
+        + "Reduce false 51\n"
+        + "Reduce true 32\n"
+        + "Reduce false 35\n"
+        + "Reduce true 32\n"
+        + "Reduce false 52\n"
+        + "Reduce true 46\n"
+        + "Reduce false 54\n"
+        + "Reduce true 41\n"
+        + "Reduce false 54\n"
+        + "Reduce true 45\n"
+        + "Reduce false 59\n"
+        + "Reduce true 37\n"
+        + "Reduce false 47\n"
+        + "Reduce true 36\n"
+        + "Reduce false 43\n"
+        + "Reduce true 30\n"
+        + "Reduce false 43\n"
+        + "Reduce true 48\n"
+        + "Reduce false 49\n"
+        + "Reduce true 38\n"
+        + "Reduce false 52\n"
+        + "Reduce true 41\n"
+        + "Reduce false 50\n"
+        + "Reduce true 42\n"
+        + "Reduce false 48\n"
+        + "Reduce true 49\n"
+        + "Reduce false 60\n"
+        + "Reduce true 57\n"
+        + "Reduce false 48\n"
+        + "Reduce true 55\n"
+        + "Reduce false 47\n"
+        + "Reduce true 52\n"
+        + "Reduce false 53\n"
+        + "Reduce true 49\n"
+        + "Reduce false 46\n"
+        + "Reduce true 49\n"
+        + "Reduce false 47\n"
+        + "Reduce true 41\n"
+        + "Reduce false 46\n"
+        + "Reduce true 36\n"
+        + "Reduce false 45\n"
+        + "Reduce true 44\n"
+        + "Reduce false 54\n"
+        + "Reduce true 44\n"
+        + "Reduce false 51\n"
+        + "Reduce true 41\n"
+        + "Reduce false 52\n"
+        + "Reduce true 50\n"
+        + "Reduce false 46\n"
+        + "Reduce true 52\n"
+        + "Reduce false 46\n"
+        + "Reduce true 54\n"
+        + "Reduce false 55";
+    String[] split = numChilds.split("\n");
+    ArrayList<String> reduce = new ArrayList<>();
+    ArrayList<String> noReduce = new ArrayList<>();
+    int numChildReduce = 0;
+    int numChildNoReduce = 0;
+    for(String s : split){
+      if(s.contains("true")) reduce.add(s.substring(11).trim());
+      if(s.contains("false")) noReduce.add(s.substring(12).trim());
     }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb2,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb2++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
+    for(String s : reduce){
+      numChildReduce += Integer.parseInt(s);
     }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb3,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb3++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
+    for(String s : noReduce){
+      numChildNoReduce += Integer.parseInt(s);
     }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb4,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb4++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb5,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb5++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb6,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb6++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    for(int i = 0;i<100;i++){
-      Session game = new Session(dumb7,rule);
-      int [] scores = game.playGame();
-      if(scores[0]>scores[1]) winsDumb7++;
-      String nameWinner = (scores[0]>scores[1])?"ISMCTS":"Rule";
-      System.out.println("Game won by player " + nameWinner);
-    }
-    System.out.println("Wins Player Const Exploration 0.4: " + winsDumb + "\nWins Player Const Exploration 0.6: " + winsDumb2
-    + "\nWins Player Const Exploration 0.7: " + winsDumb3 + "\nWins Player Const Exploration 0.8: " + winsDumb4 +
-        "\nWins Player Const Exploration 1: " + winsDumb5 +"\nWins Player Const Exploration 1.2: " + winsDumb6 +
-        "\nWins Player Const Exploration 1.4: " + winsDumb7);
+    System.out.println("Reduce Childs " + numChildReduce + "\t\t\tNoReduce " + numChildNoReduce);
   }
 
   @Test
   public void testLightHeavy(){
-    ISPlayer light = new ISPlayer(false,100,0.7,0);
-    ISPlayer heavy = new ISPlayer(true,100,0.7,0);
+    ISPlayer light = new ISPlayer(0,100,0.7,0,true);
+    ISPlayer heavy = new ISPlayer(1,100,0.7,0,true);
     Session game;
     int winsLight = 0;
     int winsHeavy = 0;
@@ -191,28 +236,19 @@ public class LostTest {
   }
 
   @Test
-  public void testDetPlayer(){
-    DeterminatorPlayer determinator = new DeterminatorPlayer(false,15,400);
-    ISPlayer dumb = new ISPlayer(false,6000,0.7,0);
-    Session game = new Session(determinator,dumb);
-    int[] scores = game.playGame();
-    System.out.println("Scores ->\tDeterminization: " + scores[0] + "\t:\t" + scores[1] + ":ISMCTS") ;
-  }
-
-  @Test
   public void testIterations(){
-    ISPlayer light07Reward0 = new ISPlayer(false,1000,0.7,0);
+    //ISPlayer light07Reward0 = new ISPlayer(false,1000,0.7,0);
     //ISPlayer light07Reward0 = new ISPlayer(false,8000,0.7,0);
     RuleBasedPlayer rule = new RuleBasedPlayer();
-    Session game = new Session(light07Reward0,rule);
-    game.playGame();
-    System.out.println(game);
+    //Session game = new Session(light07Reward0,rule);
+    //game.playGame();
+    //System.out.println(game);
   }
 
   @Test
   public void testRewardStrategy(){
-    ISPlayer strategy0 = new ISPlayer(false,1000,0.7,0);
-    ISPlayer strategy2 = new ISPlayer(false,1000,0.7,2);
+    ISPlayer strategy0 = new ISPlayer(0,1000,0.7,0,true);
+    ISPlayer strategy2 = new ISPlayer(0,1000,0.7,2,true);
     Session game;
     int winsStrat0 = 0;
     int winsStrat1 = 0;
@@ -233,22 +269,6 @@ public class LostTest {
       System.out.println("Game won by player " + nameWinner);
     }
     System.out.println("Wins Strat0: " + winsStrat0 + "Wins Strat1: " + winsStrat1);
-  }
-
-  @Test
-  public void experiment(){
-    ISPlayer light8sec07reward0 = new ISPlayer(false,100,0.7,0);
-    ISPlayer heavy8sec07reward0 = new ISPlayer(true,8000,0.7,0);
-    ISPlayer light8sec14reward2 = new ISPlayer(false,500,1.4,2);
-    RuleBasedPlayer ruleOld = new RuleBasedPlayer();
-    RuleBasedPlayerALT ruleNew = new RuleBasedPlayerALT();
-    RuleBasedPlayer rule = new RuleBasedPlayer();
-    Experiment experiment = new Experiment(light8sec07reward0,rule,4);
-    Experiment experiment2 = new Experiment(light8sec14reward2,rule,2);
-    Experiment experiment3 = new Experiment(ruleNew,ruleOld,50000);
-    experiment.doExperiment();
-    experiment2.doExperiment();
-    experiment3.doExperiment();
   }
 
   @Test

@@ -4,7 +4,6 @@ import game.Card;
 import game.Move;
 import game.Session;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class NodeIS {

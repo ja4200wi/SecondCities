@@ -9,6 +9,7 @@ public abstract class Player {
 
   boolean isCheating = false;
   boolean imP1;
+  boolean hasMemory = false;
 
   public Player(){}
 
@@ -91,6 +92,10 @@ public abstract class Player {
       sb.append(c);
     }
     System.out.println(sb);
+  }
+
+  public boolean hasMemory(){
+    return this.hasMemory;
   }
 
   /** Get methods*/

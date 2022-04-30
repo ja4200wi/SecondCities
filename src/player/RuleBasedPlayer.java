@@ -14,7 +14,9 @@ public class RuleBasedPlayer extends Player {
    */
   private boolean[] playColor = {false, false, false, false, false};
 
-  public RuleBasedPlayer(){super();}
+  public RuleBasedPlayer(){
+    super();
+  }
 
   @Override
   public Move makeMove(Card[] myHand,Stack<Card>[] myExp, Stack<Card>[] oppExp, Stack<Card>[] discardPile,boolean turn,int turnCounter) {
@@ -71,9 +73,13 @@ public class RuleBasedPlayer extends Player {
   }
 
   public int startExpedition(Card[] myHand,Stack<Card>[] myExp){
-    decideColorsToPlay(myHand);
+    //decideColorsToPlay(myHand);
+    int[] pointsPerColor = {0,0,0,0,0};
+    for(Card c : myHand){
+      if(!c.isCoinCard()) pointsPerColor[c.getColor()] += c.getValue();
+    }
     for(int i = 0;i<5;i++){
-      if(playColor[i]){
+      if(pointsPerColor[i]>20){
         if(Player.getTopCard(myExp[i])==null) return findLowestOfColor(i,myHand);
       }
     }
