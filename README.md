@@ -35,6 +35,9 @@ The **player** package holds 8 classes: *Player*, *MemoryPlayer*, TrulyRandomPla
 
 ---
 ### 2. Start the JavFX application
+
+> **Refer to the HOW_TO_USE.pdf for information on how to use and communicate with the user interface.**
+
 To start the JavaFX application use the SecondCities.jar and make sure to add important JavaFX modules javafx.base,javafx.controls,javafx.fxml. 
 The necessary files can be downloaded  at https://gluonhq.com/products/javafx/. 
 Then to start the application unzip the JavaFX SDK downloaded and place it next to the .jar.
